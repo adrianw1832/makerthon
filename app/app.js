@@ -7,25 +7,25 @@ $(document).ready(function() {
   var gridContext = gridCanvas.getContext("2d");
 
   //it seems that canvas has to be a square
-  var H = 1000;
-  var W = 1000;
-  var speed = 5;
-  var x = 500;
-  var y = 500;
-  var horizontalSpeed = 0;
-  var verticalSpeed = 0;
+  var defaultHeight = 1000;
+  var defaultWidth = 1000;
+  var ballSpeed = 5;
+  var xCoord = 500;
+  var yCoord = 500;
+  var xVelocity = 0;
+  var yVelocity = 0;
   var radius = 15;
-  var circle = new Circle(x, y, radius);
+  var circle = new Circle(xCoord, yCoord, radius);
   var food = new Food();
   var colour = food.getRandomColour();
   var collisionPosition;
 
-  ballCanvas.height = H;
-  ballCanvas.width = W;
-  foodCanvas.height = H;
-  foodCanvas.width = W;
-  gridCanvas.height = H;
-  gridCanvas.width = W;
+  ballCanvas.height = defaultHeight;
+  ballCanvas.width = defaultWidth;
+  foodCanvas.height = defaultHeight;
+  foodCanvas.width = defaultWidth;
+  gridCanvas.height = defaultHeight;
+  gridCanvas.width = defaultWidth;
 
   function backgroundGrid() {
     var opts = {
@@ -40,16 +40,12 @@ $(document).ready(function() {
   }
 
   function move() {
-    ballContext.clearRect(0, 0, H, W);
+    ballContext.clearRect(0, 0, defaultHeight, defaultWidth);
     circle.draw(ballContext, colour);
-    if (circle.x > W - circle.radius || circle.x < circle.radius) {
-      horizontalSpeed = -horizontalSpeed;
-    }
-    if (circle.y > H - circle.radius || circle.y < circle.radius) {
-      verticalSpeed = -verticalSpeed;
-    }
-    circle.x += horizontalSpeed;
-    circle.y += verticalSpeed;
+    if (circle.x > defaultWidth - circle.radius || circle.x < circle.radius) xVelocity = -xVelocity;
+    if (circle.y > defaultHeight - circle.radius || circle.y < circle.radius) yVelocity = -yVelocity;
+    circle.x += xVelocity;
+    circle.y += yVelocity;
     eatFood();
   }
 
@@ -74,11 +70,11 @@ $(document).ready(function() {
     var xdif = mouseX - circle.x;
     var ydif = mouseY - circle.y;
     var distance = Math.sqrt(xdif * xdif + ydif * ydif);
-    var moves = distance / speed;
+    var moves = distance / ballSpeed;
     var xunits = (xdif) / moves;
     var yunits = (ydif) / moves;
-    horizontalSpeed = xunits;
-    verticalSpeed = yunits;
+    xVelocity = xunits;
+    yVelocity = yunits;
   }
 
   function hasCollided() {
