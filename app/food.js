@@ -5,32 +5,25 @@ function Food() {
   this.radius = 5;
 }
 
-Food.prototype.getRandomColour = function() {
-  var letters = '0123456789ABCDEF'.split('');
-  var colour = '#';
-  for (var i = 0; i < 6; i++) {
-    colour += letters[Math.floor(Math.random() * 16)];
-  }
-  return colour;
-};
+var randomColourGenerator = new RandomColourGenerator();
 
-Food.prototype.fillFood = function(ctx) {
-  function randomPOS() {
-    return Math.round(Math.random() * 1000);
-  }
-
+Food.prototype.fillFood = function(foodContext) {
   while (this.food < this.maxFood) {
-    ctx.beginPath();
-    var x = randomPOS();
-    var y = randomPOS();
-    ctx.arc(x, y, 5, 0, Math.PI * 2, true);
-    this.foodPositions.push([x, y]);
-    ctx.closePath();
-    ctx.fillStyle = this.getRandomColour();
-    ctx.fill();
-    ctx.strokeStyle = this.getRandomColour();
-    ctx.lineWidth = 1;
-    ctx.stroke();
+    foodContext.beginPath();
+    var xCoord = Math.round(Math.random() * 1000);
+    var yCoord = Math.round(Math.random() * 1000);
+    foodContext.arc(xCoord, yCoord, 5, 0, Math.PI * 2, true);
+    this.foodPositions.push([xCoord, yCoord]);
+    foodContext.closePath();
+    setProperties(foodContext);
     this.food++;
   }
+};
+
+var setProperties = function(foodContext) {
+  foodContext.fillStyle = randomColourGenerator.getRandomColour();
+  foodContext.fill();
+  foodContext.strokeStyle = randomColourGenerator.getRandomColour();
+  foodContext.stroke();
+  foodContext.lineWidth = 1;
 };

@@ -17,7 +17,6 @@ $(document).ready(function() {
   var radius = 15;
   var circle = new Circle(xCoord, yCoord, radius);
   var food = new Food();
-  var colour = food.getRandomColour();
   var collisionPosition;
 
   ballCanvas.height = defaultHeight;
@@ -41,7 +40,7 @@ $(document).ready(function() {
 
   function move() {
     ballContext.clearRect(0, 0, defaultHeight, defaultWidth);
-    circle.draw(ballContext, colour);
+    circle.draw(ballContext);
     if (circle.xCoord > defaultWidth - circle.radius || circle.xCoord < circle.radius) xVelocity = -xVelocity;
     if (circle.yCoord > defaultHeight - circle.radius || circle.yCoord < circle.radius) yVelocity = -yVelocity;
     circle.xCoord += xVelocity;
