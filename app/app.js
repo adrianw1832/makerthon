@@ -28,7 +28,7 @@ $(document).ready(function() {
   gridCanvas.width = defaultWidth;
 
   function backgroundGrid() {
-    var opts = {
+    var parameters = {
       distance: 50,
       lineWidth: 0.7,
       gridColor: "#E7E6E8",
@@ -36,53 +36,42 @@ $(document).ready(function() {
       horizontalLines: true,
       verticalLines: true
     };
-    new Grid(opts).draw(gridContext);
+    new Grid(parameters).draw(gridContext);
   }
 
   function move() {
     ballContext.clearRect(0, 0, defaultHeight, defaultWidth);
     circle.draw(ballContext, colour);
-    if (circle.x > defaultWidth - circle.radius || circle.x < circle.radius) xVelocity = -xVelocity;
-    if (circle.y > defaultHeight - circle.radius || circle.y < circle.radius) yVelocity = -yVelocity;
-    circle.x += xVelocity;
-    circle.y += yVelocity;
+    if (circle.xCoord > defaultWidth - circle.radius || circle.xCoord < circle.radius) xVelocity = -xVelocity;
+    if (circle.yCoord > defaultHeight - circle.radius || circle.yCoord < circle.radius) yVelocity = -yVelocity;
+    circle.xCoord += xVelocity;
+    circle.yCoord += yVelocity;
     eatFood();
   }
 
-  function onMouseMove(e) {
-    var element = ballCanvas;
-    var offsetX = 0,
-      offsetY = 0;
-
-    if (element.offsetParent) {
-      do {
-        offsetX += element.offsetLeft;
-        offsetY += element.offsetTop;
-      } while ((element = element.offsetParent));
-    }
-
-    mouseX = e.pageX - offsetX;
-    mouseY = e.pageY - offsetY;
-    determineNewDirection(mouseX, mouseY);
+  function onMouseMove(page) {
+    var mouseX = page.pageX;
+    var mouseY = page.pageY;
+    calculateBallVelocity(mouseX, mouseY);
   }
 
-  function determineNewDirection(mouseX, mouseY) {
-    var xdif = mouseX - circle.x;
-    var ydif = mouseY - circle.y;
-    var distance = Math.sqrt(xdif * xdif + ydif * ydif);
+  function calculateBallVelocity(mouseX, mouseY) {
+    var xdiff = mouseX - circle.xCoord;
+    var ydiff = mouseY - circle.yCoord;
+    var distance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
     var moves = distance / ballSpeed;
-    var xunits = (xdif) / moves;
-    var yunits = (ydif) / moves;
+    var xunits = (xdiff) / moves;
+    var yunits = (ydiff) / moves;
     xVelocity = xunits;
     yVelocity = yunits;
   }
 
   function hasCollided() {
-    circlePositions = [circle.x, circle.y];
+    circlePositions = [circle.xCoord, circle.yCoord];
     for (var i = 0; i < food.foodPositions.length; i++) {
-      var xdif = circle.x - food.foodPositions[i][0];
-      var ydif = circle.y - food.foodPositions[i][1];
-      var distance = Math.sqrt(xdif * xdif + ydif * ydif);
+      var xdiff = circle.xCoord - food.foodPositions[i][0];
+      var ydiff = circle.yCoord - food.foodPositions[i][1];
+      var distance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
       if (distance < circle.radius + 5) {
         collisionPosition = food.foodPositions[i];
         return true;
