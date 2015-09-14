@@ -76,9 +76,20 @@ $(document).ready(function() {
 
   function eatFood() {
     if (hasCollided()) {
+      var index = food.foodPositions.indexOf(collisionPosition);
+      food.foodPositions.splice(index, 1);
       ctx2.clearRect(collisionPosition[0] - 5, collisionPosition[1] - 5, radius * 2, radius * 2);
+      getsBigger(5);
     }
   }
+
+  function getsBigger(eatenCircleRadius) {
+    var originalCircle = Math.PI * circle.radius * circle.radius;
+    var eatenCircle = Math.PI * eatenCircleRadius * eatenCircleRadius;
+    var newRadius = Math.sqrt((originalCircle + eatenCircle) / Math.PI);
+    console.log(newRadius)
+    circle.radius = newRadius
+  };
 
   function init() {
     setInterval(move, 30);
