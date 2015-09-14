@@ -81,8 +81,8 @@ $(document).ready(function() {
     if (hasCollided()) {
       var index = food.foodPositions.indexOf(collisionPosition);
       food.foodPositions.splice(index, 1);
-      foodContext.clearRect(collisionPosition[0] - 5, collisionPosition[1] - 5, radius * 2, radius * 2);
-      getsBigger(5);
+      foodContext.clearRect(collisionPosition[0] - food.radius - 1.1, collisionPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
+      getsBigger(food.radius);
     }
   }
 
@@ -97,7 +97,7 @@ $(document).ready(function() {
     backgroundGrid();
     setInterval(move, 30);
     setInterval(food.fillFood(foodContext), 6000);
-    ballCanvas.addEventListener("mousemove", onMouseMove, false);
+    ballCanvas.addEventListener("mousemove", onMouseMove);
   }
 
   init();
