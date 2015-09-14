@@ -1,10 +1,10 @@
 $(document).ready(function() {
-  var canvas1 = $(".canvas1")[0];
-  var canvas2 = $(".canvas2")[0];
-  var canvas3 = $(".canvas3")[0];
-  var ctx1 = canvas1.getContext("2d");
-  var ctx2 = canvas2.getContext("2d");
-  var ctx3 = canvas3.getContext("2d");
+  var ballCanvas = $(".ballCanvas")[0];
+  var foodCanvas = $(".foodCanvas")[0];
+  var gridCanvas = $(".gridCanvas")[0];
+  var ballContext = ballCanvas.getContext("2d");
+  var foodContext = foodCanvas.getContext("2d");
+  var gridContext = gridCanvas.getContext("2d");
 
   //it seems that canvas has to be a square
   var H = 1000;
@@ -20,12 +20,12 @@ $(document).ready(function() {
   var colour = food.getRandomColour();
   var collisionPosition;
 
-  canvas1.height = H;
-  canvas1.width = W;
-  canvas2.height = H;
-  canvas2.width = W;
-  canvas3.height = H;
-  canvas3.width = W;
+  ballCanvas.height = H;
+  ballCanvas.width = W;
+  foodCanvas.height = H;
+  foodCanvas.width = W;
+  gridCanvas.height = H;
+  gridCanvas.width = W;
 
   function backgroundGrid() {
     var opts = {
@@ -36,25 +36,25 @@ $(document).ready(function() {
       horizontalLines: true,
       verticalLines: true
     };
-    new Grid(opts).draw(ctx3);
+    new Grid(opts).draw(gridContext);
   }
 
   function move() {
-    ctx1.clearRect(0, 0, H, W);
-    circle.draw(ctx1, colour);
+    ballContext.clearRect(0, 0, H, W);
+    circle.draw(ballContext, colour);
     if (circle.x > W - circle.radius || circle.x < circle.radius) {
       horizontalSpeed = -horizontalSpeed;
-    };
+    }
     if (circle.y > H - circle.radius || circle.y < circle.radius) {
       verticalSpeed = -verticalSpeed;
-    };
+    }
     circle.x += horizontalSpeed;
     circle.y += verticalSpeed;
     eatFood();
   }
 
   function onMouseMove(e) {
-    var element = canvas1;
+    var element = ballCanvas;
     var offsetX = 0,
       offsetY = 0;
 
@@ -63,7 +63,7 @@ $(document).ready(function() {
         offsetX += element.offsetLeft;
         offsetY += element.offsetTop;
       } while ((element = element.offsetParent));
-    };
+    }
 
     mouseX = e.pageX - offsetX;
     mouseY = e.pageY - offsetY;
@@ -90,8 +90,8 @@ $(document).ready(function() {
       if (distance < circle.radius + 5) {
         collisionPosition = food.foodPositions[i];
         return true;
-      };
-    };
+      }
+    }
     return false;
   }
 
@@ -99,7 +99,7 @@ $(document).ready(function() {
     if (hasCollided()) {
       var index = food.foodPositions.indexOf(collisionPosition);
       food.foodPositions.splice(index, 1);
-      ctx2.clearRect(collisionPosition[0] - 5, collisionPosition[1] - 5, radius * 2, radius * 2);
+      foodContext.clearRect(collisionPosition[0] - 5, collisionPosition[1] - 5, radius * 2, radius * 2);
       getsBigger(5);
     }
   }
@@ -114,8 +114,8 @@ $(document).ready(function() {
   function init() {
     backgroundGrid();
     setInterval(move, 30);
-    setInterval(food.fillFood(ctx2), 6000);
-    canvas1.addEventListener("mousemove", onMouseMove, false);
+    setInterval(food.fillFood(foodContext), 6000);
+    ballCanvas.addEventListener("mousemove", onMouseMove, false);
   }
 
   init();
