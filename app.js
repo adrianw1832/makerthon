@@ -16,6 +16,7 @@ $(document).ready(function() {
   var radius = 15;
   var circle = new Circle(x, y, radius);
   var food = new Food();
+  var collisionPosition;
 
   canvas1.height = H;
   canvas1.width = W;
@@ -29,7 +30,7 @@ $(document).ready(function() {
     if(circle.y > H - circle.radius || circle.y < circle.radius) { verticalSpeed = -verticalSpeed; }
     circle.x += horizontalSpeed;
     circle.y += verticalSpeed;
-    hasCollided();
+    eatFood();
   }
 
   function onMouseMove(e) {
@@ -66,8 +67,16 @@ $(document).ready(function() {
       var ydif = circle.y - food.foodPositions[i][1];
       var distance = Math.sqrt(xdif * xdif + ydif * ydif);
       if(distance < circle.radius + 5){
-        return food.foodPositions[i];
+        collisionPosition = food.foodPositions[i];
+        return true;
       }
+    }
+    return false;
+  }
+
+  function eatFood() {
+    if (hasCollided()) {
+      ctx2.clearRect(collisionPosition[0] - 5, collisionPosition[1] - 5, radius * 2, radius * 2);
     }
   }
 
