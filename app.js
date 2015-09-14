@@ -27,6 +27,3 @@ function draw() {
 function init(){
   setInterval(draw, 30);
 }
-
-
-
