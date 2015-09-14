@@ -7,19 +7,12 @@ $(document).ready(function() {
   //it seems that canvas has to be a square
   var H = 1000;
   var W = 1000;
-<<<<<<< HEAD
+
   var speed = 5;
   var x = 500;
   var y = 500;
   var horizontalSpeed = 0;
   var verticalSpeed = 0;
-=======
-
-  var x = 500;
-  var y = 500;
-  var dx = 5;
-  var dy = 5;
->>>>>>> 3f8873c3bcfdfeb18ef65c1960e66ef8b6cb7fcb
   var radius = 15;
   var circle = new Circle(x, y, radius);
   var food = new Food();
@@ -30,25 +23,13 @@ $(document).ready(function() {
   canvas2.width = W;
 
   function move() {
-<<<<<<< HEAD
     ctx.clearRect(0, 0, H, W);
-    circle.draw(ctx);
+    circle.draw(ctx1);
     if(circle.x > W - circle.radius || circle.x < circle.radius) { horizontalSpeed = -horizontalSpeed; }
     if(circle.y > H - circle.radius || circle.y < circle.radius) { verticalSpeed = -verticalSpeed; }
     circle.x += horizontalSpeed;
     circle.y += verticalSpeed;
-=======
-    ctx1.clearRect(0, 0, H, W);
-    circle.draw(ctx1);
-    if (circle.x > W - circle.radius || circle.x < circle.radius) {
-      dx = -dx;
-    }
-    if (circle.y > H - circle.radius || circle.y < circle.radius) {
-      dy = -dy;
-    }
-    circle.x += dx;
-    circle.y += dy;
->>>>>>> 3f8873c3bcfdfeb18ef65c1960e66ef8b6cb7fcb
+    hasCollided();
   }
 
   function onMouseMove(e) {
@@ -69,7 +50,6 @@ $(document).ready(function() {
   }
 
   function determineNewDirection(mouseX, mouseY) {
-<<<<<<< HEAD
     var xdif = mouseX - circle.x;
     var ydif = mouseY - circle.y;
     var distance = Math.sqrt(xdif*xdif + ydif*ydif);
@@ -78,16 +58,18 @@ $(document).ready(function() {
     var yunits = (ydif)/moves;
     horizontalSpeed = xunits;
     verticalSpeed = yunits;
-=======
-    var xdif = circle.x - mouseX;
-    var ydif = circle.y - mouseY;
-    var distance = Math.sqrt(xdif * xdif + ydif * ydif);
-    var moves = distance / 5;
-    var xunits = (circle.x - mouseX) / moves;
-    var yunits = (circle.y - mouseY) / moves;
-    dx = -xunits;
-    dy = -yunits;
->>>>>>> 3f8873c3bcfdfeb18ef65c1960e66ef8b6cb7fcb
+  }
+
+  function hasCollided() {
+    circlePositions = [circle.x, circle.y];
+    for (var i = 0; i < food.foodPositions.length; i++) {
+      var xdif = circle.x - food.foodPositions[i][0];
+      var ydif = circle.y - food.foodPositions[i][1];
+      var distance = Math.sqrt(xdif * xdif + ydif * ydif);
+      if(distance < circle.radius + 5){
+        return food.foodPositions[i];
+      }
+    }
   }
 
   function init() {
