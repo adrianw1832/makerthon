@@ -15,15 +15,28 @@ $(document).ready(function() {
   var radius = 15;
   var circle = new Circle(x, y, radius);
   var food = new Food();
+  var colour = food.getRandomColour();
 
   canvas1.height = H;
   canvas1.width = W;
   canvas2.height = H;
   canvas2.width = W;
 
+  function backgroundGrid() {
+    var opts = {
+      distance: 50,
+      lineWidth: 0.7,
+      gridColor: "#E7E6E8",
+      caption: false,
+      horizontalLines: true,
+      verticalLines: true
+    };
+    new Grid(opts).draw(ctx2);
+  };
+
   function move() {
     ctx1.clearRect(0, 0, H, W);
-    circle.draw(ctx1);
+    circle.draw(ctx1, colour);
     if (circle.x > W - circle.radius || circle.x < circle.radius) {
       dx = -dx;
     }
@@ -63,8 +76,9 @@ $(document).ready(function() {
   }
 
   function init() {
+    backgroundGrid();
     setInterval(move, 30);
-    food.fillFood(ctx2);
+    setInterval(food.fillFood(ctx2), 6000);
     canvas1.addEventListener("mousemove", onMouseMove, false);
   }
 
