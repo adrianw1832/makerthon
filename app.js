@@ -1,33 +1,43 @@
 $(document).ready(function() {
-  var canvas = $(".canvas")[0];
-  var ctx = canvas.getContext("2d");
+  var canvas1 = $(".canvas1")[0];
+  var canvas2 = $(".canvas2")[0];
+  var ctx1 = canvas1.getContext("2d");
+  var ctx2 = canvas2.getContext("2d");
 
   //it seems that canvas has to be a square
   var H = 1000;
   var W = 1000;
 
-  var x = 45;
-  var y = 200;
+  var x = 500;
+  var y = 500;
   var dx = 5;
   var dy = 5;
   var radius = 15;
   var circle = new Circle(x, y, radius);
+  var food = new Food();
 
-  canvas.height = H;
-  canvas.width = W;
+  canvas1.height = H;
+  canvas1.width = W;
+  canvas2.height = H;
+  canvas2.width = W;
 
   function move() {
-    ctx.clearRect(0, 0, H, W);
-    circle.draw(ctx);
-    if(circle.x > W - circle.radius || circle.x < circle.radius) { dx = -dx; }
-    if(circle.y > H - circle.radius || circle.y < circle.radius) { dy = -dy; }
+    ctx1.clearRect(0, 0, H, W);
+    circle.draw(ctx1);
+    if (circle.x > W - circle.radius || circle.x < circle.radius) {
+      dx = -dx;
+    }
+    if (circle.y > H - circle.radius || circle.y < circle.radius) {
+      dy = -dy;
+    }
     circle.x += dx;
     circle.y += dy;
   }
 
   function onMouseMove(e) {
-    var element = canvas;
-    var offsetX = 0, offsetY = 0;
+    var element = canvas1;
+    var offsetX = 0,
+      offsetY = 0;
 
     if (element.offsetParent) {
       do {
@@ -44,17 +54,18 @@ $(document).ready(function() {
   function determineNewDirection(mouseX, mouseY) {
     var xdif = circle.x - mouseX;
     var ydif = circle.y - mouseY;
-    var distance = Math.sqrt(xdif*xdif + ydif*ydif);
-    var moves = distance/5;
-    var xunits = (circle.x - mouseX)/moves;
-    var yunits = (circle.y - mouseY)/moves;
+    var distance = Math.sqrt(xdif * xdif + ydif * ydif);
+    var moves = distance / 5;
+    var xunits = (circle.x - mouseX) / moves;
+    var yunits = (circle.y - mouseY) / moves;
     dx = -xunits;
     dy = -yunits;
   }
 
-  function init(){
+  function init() {
     setInterval(move, 30);
-    canvas.addEventListener("mousemove", onMouseMove, false);
+    food.fillFood(ctx2);
+    canvas1.addEventListener("mousemove", onMouseMove, false);
   }
 
   init();
