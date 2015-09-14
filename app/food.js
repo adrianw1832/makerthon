@@ -2,6 +2,7 @@ function Food() {
   this.food = 0;
   this.maxFood = 30;
   this.foodPositions = [];
+  this.radius = 5;
 };
 
 Food.prototype.getRandomColour = function() {

@@ -58,21 +58,18 @@ $(document).ready(function() {
   function calculateBallVelocity(mouseX, mouseY) {
     var xdiff = mouseX - circle.xCoord;
     var ydiff = mouseY - circle.yCoord;
-    var distance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
-    var moves = distance / ballSpeed;
-    var xunits = (xdiff) / moves;
-    var yunits = (ydiff) / moves;
-    xVelocity = xunits;
-    yVelocity = yunits;
+    var mouseToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+    var time = mouseToBallDistance / ballSpeed;
+    xVelocity = xdiff / time;
+    yVelocity = ydiff / time;
   }
 
   function hasCollided() {
-    circlePositions = [circle.xCoord, circle.yCoord];
     for (var i = 0; i < food.foodPositions.length; i++) {
       var xdiff = circle.xCoord - food.foodPositions[i][0];
       var ydiff = circle.yCoord - food.foodPositions[i][1];
-      var distance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
-      if (distance < circle.radius + 5) {
+      var foodToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+      if (foodToBallDistance < circle.radius + food.radius) {
         collisionPosition = food.foodPositions[i];
         return true;
       }
