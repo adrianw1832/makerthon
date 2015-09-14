@@ -37,7 +37,7 @@ $(document).ready(function() {
       verticalLines: true
     };
     new Grid(opts).draw(ctx3);
-  };
+  }
 
   function move() {
     ctx1.clearRect(0, 0, H, W);
@@ -51,7 +51,7 @@ $(document).ready(function() {
     circle.x += horizontalSpeed;
     circle.y += verticalSpeed;
     eatFood();
-  };
+  }
 
   function onMouseMove(e) {
     var element = canvas1;
@@ -68,7 +68,7 @@ $(document).ready(function() {
     mouseX = e.pageX - offsetX;
     mouseY = e.pageY - offsetY;
     determineNewDirection(mouseX, mouseY);
-  };
+  }
 
   function determineNewDirection(mouseX, mouseY) {
     var xdif = mouseX - circle.x;
@@ -79,7 +79,7 @@ $(document).ready(function() {
     var yunits = (ydif) / moves;
     horizontalSpeed = xunits;
     verticalSpeed = yunits;
-  };
+  }
 
   function hasCollided() {
     circlePositions = [circle.x, circle.y];
@@ -93,20 +93,30 @@ $(document).ready(function() {
       };
     };
     return false;
-  };
+  }
 
   function eatFood() {
     if (hasCollided()) {
+      var index = food.foodPositions.indexOf(collisionPosition);
+      food.foodPositions.splice(index, 1);
       ctx2.clearRect(collisionPosition[0] - 5, collisionPosition[1] - 5, radius * 2, radius * 2);
-    };
-  };
+      getsBigger(5);
+    }
+  }
+
+  function getsBigger(eatenCircleRadius) {
+    var originalCircle = Math.PI * circle.radius * circle.radius;
+    var eatenCircle = Math.PI * eatenCircleRadius * eatenCircleRadius;
+    var newRadius = Math.sqrt((originalCircle + eatenCircle) / Math.PI);
+    circle.radius = newRadius;
+  }
 
   function init() {
     backgroundGrid();
     setInterval(move, 30);
     setInterval(food.fillFood(ctx2), 6000);
     canvas1.addEventListener("mousemove", onMouseMove, false);
-  };
+  }
 
   init();
 });
