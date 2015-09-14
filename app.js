@@ -7,11 +7,19 @@ $(document).ready(function() {
   //it seems that canvas has to be a square
   var H = 1000;
   var W = 1000;
+<<<<<<< HEAD
+  var speed = 5;
+  var x = 500;
+  var y = 500;
+  var horizontalSpeed = 0;
+  var verticalSpeed = 0;
+=======
 
   var x = 500;
   var y = 500;
   var dx = 5;
   var dy = 5;
+>>>>>>> 3f8873c3bcfdfeb18ef65c1960e66ef8b6cb7fcb
   var radius = 15;
   var circle = new Circle(x, y, radius);
   var food = new Food();
@@ -22,6 +30,14 @@ $(document).ready(function() {
   canvas2.width = W;
 
   function move() {
+<<<<<<< HEAD
+    ctx.clearRect(0, 0, H, W);
+    circle.draw(ctx);
+    if(circle.x > W - circle.radius || circle.x < circle.radius) { horizontalSpeed = -horizontalSpeed; }
+    if(circle.y > H - circle.radius || circle.y < circle.radius) { verticalSpeed = -verticalSpeed; }
+    circle.x += horizontalSpeed;
+    circle.y += verticalSpeed;
+=======
     ctx1.clearRect(0, 0, H, W);
     circle.draw(ctx1);
     if (circle.x > W - circle.radius || circle.x < circle.radius) {
@@ -32,6 +48,7 @@ $(document).ready(function() {
     }
     circle.x += dx;
     circle.y += dy;
+>>>>>>> 3f8873c3bcfdfeb18ef65c1960e66ef8b6cb7fcb
   }
 
   function onMouseMove(e) {
@@ -52,6 +69,16 @@ $(document).ready(function() {
   }
 
   function determineNewDirection(mouseX, mouseY) {
+<<<<<<< HEAD
+    var xdif = mouseX - circle.x;
+    var ydif = mouseY - circle.y;
+    var distance = Math.sqrt(xdif*xdif + ydif*ydif);
+    var moves = distance/speed;
+    var xunits = (xdif)/moves;
+    var yunits = (ydif)/moves;
+    horizontalSpeed = xunits;
+    verticalSpeed = yunits;
+=======
     var xdif = circle.x - mouseX;
     var ydif = circle.y - mouseY;
     var distance = Math.sqrt(xdif * xdif + ydif * ydif);
@@ -60,6 +87,7 @@ $(document).ready(function() {
     var yunits = (circle.y - mouseY) / moves;
     dx = -xunits;
     dy = -yunits;
+>>>>>>> 3f8873c3bcfdfeb18ef65c1960e66ef8b6cb7fcb
   }
 
   function init() {
