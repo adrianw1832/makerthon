@@ -1,15 +1,17 @@
-.canvas1 {
-  border: 2px solid blue;
+.ballCanvas {
+  border: 2px solid black;
   position: absolute;
   left: 0;
   top: 0;
 }
-.canvas2 {
+
+.foodCanvas {
   position: absolute;
   left: 0;
   top: 0;
 }
-.canvas3 {
+
+.gridCanvas {
   position: absolute;
   left: 0;
   top: 0;
