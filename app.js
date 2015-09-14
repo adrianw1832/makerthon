@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function() {
   var canvas = $(".canvas")[0];
   var ctx = canvas.getContext("2d");
 
@@ -10,23 +10,19 @@ $(document).ready(function(){
   var y = 200;
   var dx = 5;
   var dy = 5;
+  var radius = 15;
+  var circle = new Circle(x, y, radius);
 
   canvas.height = H;
   canvas.width = W;
 
-  function draw() {
-    var radius = 15;
+  function move() {
     ctx.clearRect(0, 0, H, W);
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI*2, true);
-    ctx.closePath();
-    ctx.fill();
-
-    if(x > W - radius || x < radius) { dx = -dx} ;
-    if(y > H - radius || y < radius) { dy = -dy };
-
-    x += dx;
-    y += dy;
+    circle.draw(ctx);
+    if(circle.x > W - circle.radius || circle.x < circle.radius) { dx = -dx; }
+    if(circle.y > H - circle.radius || circle.y < circle.radius) { dy = -dy; }
+    circle.x += dx;
+    circle.y += dy;
   }
 
   function onMouseMove(e) {
@@ -46,18 +42,18 @@ $(document).ready(function(){
   }
 
   function determineNewDirection(mouseX, mouseY) {
-    var xdif = x - mouseX;
-    var ydif = y - mouseY;
+    var xdif = circle.x - mouseX;
+    var ydif = circle.y - mouseY;
     var distance = Math.sqrt(xdif*xdif + ydif*ydif);
     var moves = distance/5;
-    var xunits = (x - mouseX)/moves;
-    var yunits = (y - mouseY)/moves;
+    var xunits = (circle.x - mouseX)/moves;
+    var yunits = (circle.y - mouseY)/moves;
     dx = -xunits;
     dy = -yunits;
   }
 
   function init(){
-    setInterval(draw, 30);
+    setInterval(move, 30);
     canvas.addEventListener("mousemove", onMouseMove, false);
   }
 
