@@ -32,6 +32,7 @@ $(document).ready(function() {
     }
     circle.x += dx;
     circle.y += dy;
+    hasCollided();
   }
 
   function onMouseMove(e) {
@@ -60,6 +61,18 @@ $(document).ready(function() {
     var yunits = (circle.y - mouseY) / moves;
     dx = -xunits;
     dy = -yunits;
+  }
+
+  function hasCollided() {
+    circlePositions = [circle.x, circle.y];
+    for (var i = 0; i < food.foodPositions.length; i++) {
+      var xdif = circle.x - food.foodPositions[i][0];
+      var ydif = circle.y - food.foodPositions[i][1];
+      var distance = Math.sqrt(xdif * xdif + ydif * ydif);
+      if(distance < circle.radius + 5){
+        return food.foodPositions[i];
+      }
+    }
   }
 
   function init() {
