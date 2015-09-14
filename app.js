@@ -2,8 +2,9 @@ $(document).ready(function(){
   var canvas = $(".canvas")[0];
   var ctx = canvas.getContext("2d");
 
+  //it seems that canvas has to be a square
   var H = 1000;
-  var W = 1618;
+  var W = 1000;
 
   var x = 45;
   var y = 200;
@@ -20,13 +21,15 @@ $(document).ready(function(){
     ctx.arc(x, y, radius, 0, Math.PI*2, true);
     ctx.closePath();
     ctx.fill();
-    if(x > 485 || x < 15) { dx = -dx; }
-    if(y > 485 || y < 15) { dy = -dy; }
+
+    if(x > W - radius || x < radius) { dx = -dx} ;
+    if(y > H - radius || y < radius) { dy = -dy };
+
     x += dx;
     y += dy;
   }
 
-  function onClick(e) {
+  function onMouseMove(e) {
     var element = canvas;
     var offsetX = 0, offsetY = 0;
 
@@ -43,13 +46,19 @@ $(document).ready(function(){
   }
 
   function determineNewDirection(mouseX, mouseY) {
-    if (x > mouseX) dx = -dx;
-    if (y > mouseX) dy = -dy;
-  };
+    var xdif = x - mouseX;
+    var ydif = y - mouseY;
+    var distance = Math.sqrt(xdif*xdif + ydif*ydif);
+    var moves = distance/5;
+    var xunits = (x - mouseX)/moves;
+    var yunits = (y - mouseY)/moves;
+    dx = -xunits;
+    dy = -yunits;
+  }
 
   function init(){
     setInterval(draw, 30);
-    canvas.addEventListener("click", onClick, false);
+    canvas.addEventListener("mousemove", onMouseMove, false);
   }
 
   init();
