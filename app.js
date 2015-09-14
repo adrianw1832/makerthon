@@ -23,7 +23,7 @@ $(document).ready(function() {
   canvas2.width = W;
 
   function move() {
-    ctx.clearRect(0, 0, H, W);
+    ctx1.clearRect(0, 0, H, W);
     circle.draw(ctx1);
     if(circle.x > W - circle.radius || circle.x < circle.radius) { horizontalSpeed = -horizontalSpeed; }
     if(circle.y > H - circle.radius || circle.y < circle.radius) { verticalSpeed = -verticalSpeed; }
@@ -34,8 +34,7 @@ $(document).ready(function() {
 
   function onMouseMove(e) {
     var element = canvas1;
-    var offsetX = 0,
-      offsetY = 0;
+    var offsetX = 0, offsetY = 0;
 
     if (element.offsetParent) {
       do {
