@@ -10,7 +10,7 @@ Circle.prototype.draw = function(ctx, colour) {
   ctx.closePath();
   ctx.fillStyle = colour;
   ctx.shadowColor = '#999';
-  ctx.shadowBlur = 20;
+  ctx.shadowBlur = 15;
   ctx.shadowOffsetX = 3;
   ctx.shadowOffsetY = 3;
   ctx.fill();
