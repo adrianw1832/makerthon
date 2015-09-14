@@ -1,0 +1,22 @@
+{
+  "name": "makerthon",
+  "version": "0.0.0",
+  "homepage": "https://github.com/adrianw1832/makerthon",
+  "authors": [
+    "Adrian Wong <adrianw1832@hotmail.co.uk>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular": "~1.4.5",
+    "angular-resource": "~1.4.5",
+    "bootstrap": "~3.3.5",
+    "jquery": "~2.1.4"
+  }
+}

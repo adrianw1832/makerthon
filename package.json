@@ -1,0 +1,22 @@
+{
+  "name": "makerthon",
+  "version": "1.0.0",
+  "description": "Agar.io clone",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adrianw1832/makerthon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adrianw1832/makerthon/issues"
+  },
+  "homepage": "https://github.com/adrianw1832/makerthon#readme",
+  "dependencies": {
+    "bower": "^1.5.2"
+  }
+}
