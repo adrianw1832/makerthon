@@ -103,5 +103,18 @@ $(document).ready(function() {
     ballCanvas.addEventListener("mousemove", onMouseMove);
   }
 
+  $(function() {
+    var leaderBoard = $('.leaderBoard').offset().top;
+
+    $(window).scroll(function() {
+      if ( $(window).scrollTop() > leaderBoard ) {
+        $('.leaderBoard').css({ position: 'fixed', top: '0px' })
+      } else {
+        $('.leaderBoard').css({ position: 'static', top: '0px' })
+      }
+    });
+  });
+
+
   init();
 });
