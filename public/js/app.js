@@ -130,18 +130,16 @@ $(document).ready(function() {
     $('input:text').keypress(function(event) {
       if (event.keyCode == 13) {
         $('.start-game').click();
-        $('.leaderBoard').show();
-        $('.startGame').hide();
-        init();
       }
     });
-    // $('.start-game').click(function() {
-    //   $('.leaderBoard').show();
-    //   $('.startGame').hide();
-    //   init();
-    // })
   }
 
+  $('.start-game').click(function() {
+    $('.leaderBoard').show();
+    $('.startGame').hide();
+    init();
+  });
+
   startPage();
-  // init();
+
 });
