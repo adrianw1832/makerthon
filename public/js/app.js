@@ -116,7 +116,7 @@ $(document).ready(function() {
     $('.leaderBoard').css({ position: 'fixed', top: '0px' })
     $('h3').html('1. ' + playerName + ' : ' + circle.playerPoints)
   })
-
+  
   function init() {
     backgroundGrid();
     food.fillFood(foodContext, gameBoundary);
