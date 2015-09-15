@@ -7,13 +7,8 @@ $(document).ready(function() {
   var gridContext = gridCanvas.getContext("2d");
 
   //it seems that canvas has to be a square
-<<<<<<< HEAD
-  var defaultHeight = 2000; var defaultWidth = 2000;
+  var gameBoundary = 2000;
   var xCoord = 750; var yCoord = 750;
-=======
-  var gameBoundary = 1000;
-  var xCoord = 500; var yCoord = 500;
->>>>>>> c00d5097b2e6e1016a2f35f7316d8d436bd4a211
   var xVelocity = 0; var yVelocity = 0;
   var defaultBallSpeed = 5;
   var slowDownFactor = 0.25;
@@ -23,17 +18,11 @@ $(document).ready(function() {
 
   var mouseX;
   var mouseY;
-  var scrollSensitivity = 0.5;
+  var scrollSensitivity = 0.75;
 
-<<<<<<< HEAD
-  ballCanvas.height = defaultHeight; ballCanvas.width = defaultWidth;
-  foodCanvas.height = defaultHeight; foodCanvas.width = defaultWidth;
-  gridCanvas.height = defaultHeight * 1.25; gridCanvas.width = defaultWidth * 1.25;
-=======
   ballCanvas.height = gameBoundary; ballCanvas.width = gameBoundary;
   foodCanvas.height = gameBoundary; foodCanvas.width = gameBoundary;
-  gridCanvas.height = gameBoundary; gridCanvas.width = gameBoundary;
->>>>>>> c00d5097b2e6e1016a2f35f7316d8d436bd4a211
+  gridCanvas.height = gameBoundary * 1.25; gridCanvas.width = gameBoundary * 1.25;
 
   function backgroundGrid() {
     var parameters = {
@@ -50,32 +39,28 @@ $(document).ready(function() {
   function move() {
     ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
     circle.draw(ballContext);
-    if (hitsRightBoundary() || hitsLeftBoundary()) {
-      xVelocity = 0;
-    }
-    if (hitsBottomBoundary() || hitsTopBoundary()) {
-      yVelocity = 0;
-    }
-    if(mouseX) { calculateBallVelocity(mouseX, mouseY); }
+    if (hitsRightBoundary() || hitsLeftBoundary()) xVelocity = 0;
+    if (hitsBottomBoundary() || hitsTopBoundary()) yVelocity = 0;
+    if (mouseX) calculateBallVelocity(mouseX, mouseY);
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
     circle.eatFood(foodContext, food);
   }
 
   function hitsRightBoundary() {
-    return ((circle.xCoord > gameBoundary - circle.radius) && mouseX >= circle.xCoord)
+    return ((circle.xCoord > gameBoundary - circle.radius) && mouseX >= circle.xCoord);
   }
 
   function hitsLeftBoundary() {
-    return (circle.xCoord < circle.radius && mouseX <= circle.xCoord)
+    return (circle.xCoord < circle.radius && mouseX <= circle.xCoord);
   }
 
   function hitsTopBoundary() {
-    return (circle.yCoord < circle.radius && mouseY <= circle.yCoord)
+    return (circle.yCoord < circle.radius && mouseY <= circle.yCoord);
   }
 
   function hitsBottomBoundary() {
-    return ((circle.yCoord > gameBoundary - circle.radius) && mouseY >= circle.yCoord)
+    return ((circle.yCoord > gameBoundary - circle.radius) && mouseY >= circle.yCoord);
   }
 
   function onMouseMove(page) {
