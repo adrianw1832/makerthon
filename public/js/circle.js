@@ -15,6 +15,12 @@ Circle.prototype.draw = function(ballContext) {
   getProperties(ballContext);
 };
 
+Circle.prototype.drawName = function(ballContext, playerName) {
+  ballContext.font = '20pt Calibri';
+  ballContext.fillStyle = 'black';
+  ballContext.fillText(playerName, this.xCoord - this.radius/2, this.yCoord);
+}
+
 function getProperties(ballContext) {
   ballContext.fillStyle = randomColour;
   ballContext.fill();
