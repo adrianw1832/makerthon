@@ -18,7 +18,7 @@ $(document).ready(function() {
 
   var mouseX;
   var mouseY;
-  var scrollSensitivity = 0.75;
+  var scrollSensitivity = 0.6;
 
   ballCanvas.height = gameBoundary; ballCanvas.width = gameBoundary;
   foodCanvas.height = gameBoundary; foodCanvas.width = gameBoundary;
