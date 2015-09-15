@@ -96,6 +96,11 @@ $(document).ready(function() {
   }
 
   function init() {
+    // var socket = io.connect('http://localhost');
+    // socket.on('news', function(data) {
+    //   console.log(data);
+    //   socket.emit('my other event', { my: 'data'});
+    // });
     backgroundGrid();
     food.fillFood(foodContext, gameBoundary);
     setInterval(move, 30);

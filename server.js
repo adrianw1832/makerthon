@@ -3,13 +3,16 @@ var app = express();
 
 app.use(express.static('public'));
 
-app.get('/', function(req, res) {
-  res.sendFile('index.html');
-})
+var server = require('http').Server(app);
+var io = require('socket.io')(server);
 
-var server = app.listen(3000, function() {
-  var host = server.address().address;
-  var port = server.address().port;
+server.listen(3000);
 
-  console.log("the server is running on http://%s:%s", host, port)
-})
+app.get('/', function (req, res) {
+  res.sendfile('/index.html');
+});
+
+io.on('connection', function (socket) {
+  socket.emit('news', { hello: 'world' });
+  socket.on('newGame', init);
+});
