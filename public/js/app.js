@@ -6,6 +6,8 @@ $(document).ready(function() {
   var foodContext = foodCanvas.getContext("2d");
   var gridContext = gridCanvas.getContext("2d");
 
+  var playerName;
+
   //it seems that canvas has to be a square
   var gameBoundary = 2500;
   var gamePadding = 250;
@@ -43,6 +45,7 @@ $(document).ready(function() {
   function move() {
     ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
     circle.draw(ballContext);
+    circle.drawName(ballContext,playerName);
     if (hitsRightBoundary() || hitsLeftBoundary()) xVelocity = 0;
     if (hitsBottomBoundary() || hitsTopBoundary()) yVelocity = 0;
     if (mouseX) calculateBallVelocity();
@@ -110,9 +113,9 @@ $(document).ready(function() {
   }
 
   $(window).scroll(function() {
-    $('.leaderBoard').css({ position: 'fixed', top: '0px' })
-    $('h3').html('1. Leon : ' + circle.playerPoints)
-  })
+    $('.leaderBoard').css({ position: 'fixed', top: '0px' });
+    $('h3').html('1. ' + playerName + ' : ' + circle.playerPoints);
+  });
 
   function init() {
     backgroundGrid();
@@ -129,6 +132,7 @@ $(document).ready(function() {
     $('input:text').keypress(function(event) {
       if (event.keyCode == 13) {
         $('.start-game').click();
+        playerName = $('.player-name').val();
       }
     });
   }
@@ -136,6 +140,7 @@ $(document).ready(function() {
   $('.start-game').click(function() {
     $('.leaderBoard').show();
     $('.startGame').hide();
+    playerName = $('.player-name').val();
     init();
   });
 
