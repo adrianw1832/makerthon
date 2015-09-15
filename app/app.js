@@ -16,6 +16,8 @@ $(document).ready(function() {
   var circle = new Circle(xCoord, yCoord, defaultRadius);
   var food = new Food();
   var collisionPosition;
+  var mouseX;
+  var mouseY;
 
   ballCanvas.height = defaultHeight; ballCanvas.width = defaultWidth;
   foodCanvas.height = defaultHeight; foodCanvas.width = defaultWidth;
@@ -36,16 +38,46 @@ $(document).ready(function() {
   function move() {
     ballContext.clearRect(0, 0, defaultHeight, defaultWidth);
     circle.draw(ballContext);
-    if (circle.xCoord > defaultWidth - circle.radius || circle.xCoord < circle.radius) xVelocity = -xVelocity;
-    if (circle.yCoord > defaultHeight - circle.radius || circle.yCoord < circle.radius) yVelocity = -yVelocity;
+    if (hitsRightBoundary()) {
+      xVelocity = 0;
+    }
+
+    if (hitsLeftBoundary()) {
+      xVelocity = 0;
+    }
+
+    if (hitsBottomBoundary()) {
+      yVelocity = 0;
+    }
+
+    if (hitsTopBoundary()) {
+      yVelocity = 0;
+    }
+
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
     eatFood();
   }
 
+  function hitsRightBoundary() {
+    return ((circle.xCoord > defaultWidth - circle.radius) && mouseX >= circle.xCoord)
+  }
+
+  function hitsLeftBoundary() {
+    return (circle.xCoord < circle.radius && mouseX <= circle.xCoord)
+  }
+
+  function hitsTopBoundary() {
+    return (circle.yCoord < circle.radius && mouseY <= circle.yCoord)
+  }
+
+  function hitsBottomBoundary() {
+    return ((circle.yCoord > defaultWidth - circle.radius) && mouseY >= circle.yCoord)
+  }
+
   function onMouseMove(page) {
-    var mouseX = page.pageX;
-    var mouseY = page.pageY;
+    mouseX = page.pageX;
+    mouseY = page.pageY;
     calculateBallVelocity(mouseX, mouseY);
   }
 
