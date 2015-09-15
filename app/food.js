@@ -1,24 +1,11 @@
 function Food() {
-  this.food = 0;
+  this.foodCount = 0;
   this.maxFood = 30;
   this.foodPositions = [];
-  this.radius = 5;
+  this.radius = 8;
 }
 
 var randomColourGenerator = new RandomColourGenerator();
-
-Food.prototype.fillFood = function(foodContext) {
-  while (this.food < this.maxFood) {
-    foodContext.beginPath();
-    var xCoord = Math.round(Math.random() * 1000);
-    var yCoord = Math.round(Math.random() * 1000);
-    foodContext.arc(xCoord, yCoord, 5, 0, Math.PI * 2, true);
-    this.foodPositions.push([xCoord, yCoord]);
-    foodContext.closePath();
-    setProperties(foodContext);
-    this.food++;
-  }
-};
 
 var setProperties = function(foodContext) {
   foodContext.fillStyle = randomColourGenerator.getRandomColour();
@@ -26,4 +13,17 @@ var setProperties = function(foodContext) {
   foodContext.strokeStyle = randomColourGenerator.getRandomColour();
   foodContext.stroke();
   foodContext.lineWidth = 1;
+};
+
+Food.prototype.fillFood = function(foodContext, gameBoundary) {
+  while (this.foodCount < this.maxFood) {
+    foodContext.beginPath();
+    var xCoord = Math.round(Math.random() * (gameBoundary - this.radius*2) + this.radius);
+    var yCoord = Math.round(Math.random() * (gameBoundary - this.radius*2) + this.radius);
+    foodContext.arc(xCoord, yCoord, this.radius, 0, Math.PI * 2, true);
+    this.foodPositions.push([xCoord, yCoord]);
+    foodContext.closePath();
+    setProperties(foodContext);
+    this.foodCount++;
+  }
 };
