@@ -1,6 +1,7 @@
 function Food(size) {
   this.foodCount = 0;
   this.radius = 10;
+  this.foodPositions;
 }
 
 var randomColourGenerator = new RandomColourGenerator();
@@ -14,6 +15,7 @@ var setProperties = function(foodContext) {
 };
 
 Food.prototype.fillFood = function(foodContext, foodPositions) {
+  this.foodPositions = foodPositions;
   for(var i=0; i<foodPositions.length; i++){
     foodContext.beginPath();
     foodContext.arc(foodPositions[i][0], foodPositions[i][1], this.radius, 0, Math.PI * 2, true);

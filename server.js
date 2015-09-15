@@ -33,6 +33,13 @@ io.on('connection', function (socket) {
   })
   if(players === 1) { generateFoodPositions(); }
   socket.emit('sendFoodPositions', {foodPos: foodPositions});
+
+  socket.on('sendEatenPositions', function(data) {
+    console.log(data);
+    var index = foodPositions.indexOf(data.eatenPosition);
+    foodPositions.splice(index, 1);
+    socket.emit('sendFoodPositions', {foodPos: foodPositions});
+  })
 });
 
 function gameLoop() {
