@@ -81,7 +81,6 @@ $(document).ready(function() {
       food.foodPositions.splice(index, 1);
       foodContext.clearRect(collisionPosition[0] - food.radius - 1.1, collisionPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
       food.foodCount--;
-      console.log(food.foodCount);
       getsBigger(food.radius);
     }
   }
