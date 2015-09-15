@@ -1,7 +1,5 @@
 function Food(size) {
   this.foodCount = 0;
-  this.maxFood = size/12;
-  this.foodPositions = [];
   this.radius = 10;
 }
 
@@ -15,13 +13,10 @@ var setProperties = function(foodContext) {
   foodContext.lineWidth = 1;
 };
 
-Food.prototype.fillFood = function(foodContext, gameBoundary) {
-  while (this.foodCount < this.maxFood) {
+Food.prototype.fillFood = function(foodContext, foodPositions) {
+  for(var i=0; i<foodPositions.length; i++){
     foodContext.beginPath();
-    var xCoord = Math.round(Math.random() * (gameBoundary - this.radius*2) + this.radius);
-    var yCoord = Math.round(Math.random() * (gameBoundary - this.radius*2) + this.radius);
-    foodContext.arc(xCoord, yCoord, this.radius, 0, Math.PI * 2, true);
-    this.foodPositions.push([xCoord, yCoord]);
+    foodContext.arc(foodPositions[i][0], foodPositions[i][1], this.radius, 0, Math.PI * 2, true);
     foodContext.closePath();
     setProperties(foodContext);
     this.foodCount++;

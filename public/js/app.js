@@ -52,7 +52,7 @@ $(document).ready(function() {
     if (mouseX) calculateBallVelocity();
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
-    circle.eatFood(foodContext, food);
+    // circle.eatFood(foodContext, food);
   }
 
   function hitsRightBoundary() {
@@ -145,7 +145,15 @@ $(document).ready(function() {
       currentPlayer.circle = circle;
       socket.emit('my other event', { my: currentPlayer });
       startPage();
+      receiveFoodPositions();
     });
+  }
+
+  function receiveFoodPositions() {
+    socket.on('sendFoodPositions', function(data) {
+      console.log(data.foodPos);
+      food.fillFood(foodContext, data.foodPos);
+    })
   }
 
   $('.start-game').click(function() {
