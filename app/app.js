@@ -38,22 +38,13 @@ $(document).ready(function() {
   function move() {
     ballContext.clearRect(0, 0, defaultHeight, defaultWidth);
     circle.draw(ballContext);
-    if (hitsRightBoundary()) {
+    if (hitsRightBoundary() || hitsLeftBoundary()) {
       xVelocity = 0;
     }
-
-    if (hitsLeftBoundary()) {
-      xVelocity = 0;
-    }
-
-    if (hitsBottomBoundary()) {
+    if (hitsBottomBoundary() || hitsTopBoundary()) {
       yVelocity = 0;
     }
-
-    if (hitsTopBoundary()) {
-      yVelocity = 0;
-    }
-
+    if(mouseX) { calculateBallVelocity(mouseX, mouseY); }
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
     eatFood();
@@ -83,7 +74,9 @@ $(document).ready(function() {
 
   function calculateBallVelocity(mouseX, mouseY) {
     var xdiff = mouseX - circle.xCoord;
+    console.log(xdiff);
     var ydiff = mouseY - circle.yCoord;
+    console.log(ydiff);
     var mouseToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
     var time = mouseToBallDistance / (defaultBallSpeed * sizeFactor());
     xVelocity = xdiff / time;
