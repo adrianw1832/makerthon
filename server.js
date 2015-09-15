@@ -22,22 +22,27 @@ app.get('/', function (req, res) {
 
 io.on('connection', function (socket) {
   players++;
-  var currentPlayer = {
-    id: socket.id
-  };
+  var currentPlayer = { id: socket.id };
   socket.emit('player info', { playerId: socket.id});
-  socket.on('my other event', function (data) {});
-  if(players === 1) {
-    generateFoodPositions();
-    generateRandomColour();
-  }
-  socket.emit('sendFoodInfo', {foodColour: randomColourArray, foodPos: foodPositions});
+  // socket.on('my other event', function (data) { console.log(data); });
+  if(players === 1) { generateFoodInfo(); }
+  socket.emit('sendFoodInfo', {foodPos: foodPositions, foodColour: randomColourArray});
+  socket.on('sendEatenPositions', function(data) {
+    console.log(data);
+    var index = foodPositions.indexOf(data.eatenPosition);
+    foodPositions.splice(index, 1);
   });
+});
 
 function gameLoop() {
   if(users.length > 0){
 
   }
+}
+
+function generateFoodInfo() {
+  generateFoodPositions();
+  generateRandomColour();
 }
 
 function generateFoodPositions() {
