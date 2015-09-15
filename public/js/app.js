@@ -73,7 +73,6 @@ $(document).ready(function() {
   function onMouseMove(page) {
     mouseX = page.pageX - gamePadding;
     mouseY = page.pageY - gamePadding;
-    scrollPage();
     calculateBallVelocity();
   }
 
@@ -116,12 +115,12 @@ $(document).ready(function() {
     $('.leaderBoard').css({ position: 'fixed', top: '0px' })
     $('h3').html('1. ' + playerName + ' : ' + circle.playerPoints)
   })
-  
+
   function init() {
     backgroundGrid();
     food.fillFood(foodContext, gameBoundary);
-    setInterval(move, 25);
-    setInterval(scrollPage, 25);
+    setInterval(move, 1000/ 30);
+    setInterval(scrollPage, 1000 / 30);
     setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
     setStartLocation();
