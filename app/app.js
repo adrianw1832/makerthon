@@ -43,6 +43,18 @@ $(document).ready(function() {
     eatFood();
   }
 
+  function splitsBallMove() {
+    ballContext.clearRect(0, 0, defaultHeight, defaultWidth);
+    circle.splitsInTwo(ballContext);
+    if (circle.xCoord > defaultWidth - circle.radius || circle.xCoord < circle.radius) xVelocity = -xVelocity;
+    if (circle.yCoord > defaultHeight - circle.radius || circle.yCoord < circle.radius) yVelocity = -yVelocity;
+    circle.xCoord += xVelocity;
+    circle.yCoord += yVelocity;
+    circle.twinXCoord += xVelocity;
+    circle.twinYCoord += yVelocity;
+    eatFood();
+  }
+
   function onMouseMove(page) {
     var mouseX = page.pageX;
     var mouseY = page.pageY;
@@ -91,12 +103,28 @@ $(document).ready(function() {
     circle.radius = newRadius;
   }
 
+
+
   function init() {
     backgroundGrid();
     setInterval(move, 30);
+    // setInterval(splitsBallMove, 30);
     setInterval(food.fillFood(foodContext), 6000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
   }
 
+  $(document).keypress(function(e) {
+    if (e.keyCode === 32) {
+      event.preventDefault();
+      splitsBallMove();
+      setInterval(splitsBallMove, 30);
+    }
+  });
+  // function test() {
+  //   console.log('Hello')
+  // }
+
   init();
+
+
 });
