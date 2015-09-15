@@ -8,7 +8,7 @@ $(document).ready(function() {
 
   //it seems that canvas has to be a square
   var defaultHeight = 2000; var defaultWidth = 2000;
-  var xCoord = 500; var yCoord = 500;
+  var xCoord = 750; var yCoord = 750;
   var xVelocity = 0; var yVelocity = 0;
   var defaultBallSpeed = 5;
   var slowDownFactor = 0.25;
