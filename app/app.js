@@ -7,22 +7,33 @@ $(document).ready(function() {
   var gridContext = gridCanvas.getContext("2d");
 
   //it seems that canvas has to be a square
+<<<<<<< HEAD
   var defaultHeight = 2000; var defaultWidth = 2000;
   var xCoord = 750; var yCoord = 750;
+=======
+  var gameBoundary = 1000;
+  var xCoord = 500; var yCoord = 500;
+>>>>>>> c00d5097b2e6e1016a2f35f7316d8d436bd4a211
   var xVelocity = 0; var yVelocity = 0;
   var defaultBallSpeed = 5;
   var slowDownFactor = 0.25;
   var defaultRadius = 15;
   var circle = new Circle(xCoord, yCoord, defaultRadius);
   var food = new Food();
-  var collisionPosition;
+
   var mouseX;
   var mouseY;
   var scrollSensitivity = 0.5;
 
+<<<<<<< HEAD
   ballCanvas.height = defaultHeight; ballCanvas.width = defaultWidth;
   foodCanvas.height = defaultHeight; foodCanvas.width = defaultWidth;
   gridCanvas.height = defaultHeight * 1.25; gridCanvas.width = defaultWidth * 1.25;
+=======
+  ballCanvas.height = gameBoundary; ballCanvas.width = gameBoundary;
+  foodCanvas.height = gameBoundary; foodCanvas.width = gameBoundary;
+  gridCanvas.height = gameBoundary; gridCanvas.width = gameBoundary;
+>>>>>>> c00d5097b2e6e1016a2f35f7316d8d436bd4a211
 
   function backgroundGrid() {
     var parameters = {
@@ -37,7 +48,7 @@ $(document).ready(function() {
   }
 
   function move() {
-    ballContext.clearRect(0, 0, defaultHeight, defaultWidth);
+    ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
     circle.draw(ballContext);
     if (hitsRightBoundary() || hitsLeftBoundary()) {
       xVelocity = 0;
@@ -48,11 +59,11 @@ $(document).ready(function() {
     if(mouseX) { calculateBallVelocity(mouseX, mouseY); }
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
-    eatFood();
+    circle.eatFood(foodContext, food);
   }
 
   function hitsRightBoundary() {
-    return ((circle.xCoord > defaultWidth - circle.radius) && mouseX >= circle.xCoord)
+    return ((circle.xCoord > gameBoundary - circle.radius) && mouseX >= circle.xCoord)
   }
 
   function hitsLeftBoundary() {
@@ -64,7 +75,7 @@ $(document).ready(function() {
   }
 
   function hitsBottomBoundary() {
-    return ((circle.yCoord > defaultWidth - circle.radius) && mouseY >= circle.yCoord)
+    return ((circle.yCoord > gameBoundary - circle.radius) && mouseY >= circle.yCoord)
   }
 
   function onMouseMove(page) {
@@ -95,43 +106,13 @@ $(document).ready(function() {
     return 1 - (circle.radius / defaultRadius - 1) * slowDownFactor;
   }
 
-  function hasCollided() {
-    for (var i = 0; i < food.foodPositions.length; i++) {
-      var xdiff = circle.xCoord - food.foodPositions[i][0];
-      var ydiff = circle.yCoord - food.foodPositions[i][1];
-      var foodToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
-      if (foodToBallDistance < circle.radius + food.radius) {
-        collisionPosition = food.foodPositions[i];
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function eatFood() {
-    if (hasCollided()) {
-      var index = food.foodPositions.indexOf(collisionPosition);
-      food.foodPositions.splice(index, 1);
-      foodContext.clearRect(collisionPosition[0] - food.radius - 1.1, collisionPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
-      food.foodCount--;
-      getsBigger(food.radius);
-    }
-  }
-
-  function getsBigger(eatenCircleRadius) {
-    var originalCircle = Math.PI * circle.radius * circle.radius;
-    var eatenCircle = Math.PI * eatenCircleRadius * eatenCircleRadius;
-    var newRadius = Math.sqrt((originalCircle + eatenCircle) / Math.PI);
-    circle.radius = newRadius;
-  }
-
   function refillFood() {
-    food.fillFood(foodContext);
+    food.fillFood(foodContext, gameBoundary);
   }
 
   function init() {
     backgroundGrid();
-    food.fillFood(foodContext);
+    food.fillFood(foodContext, gameBoundary);
     setInterval(move, 30);
     setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
