@@ -93,10 +93,6 @@ $(document).ready(function() {
     return 1 - (circle.radius / defaultRadius - 1) * slowDownFactor;
   }
 
-  function isMouseOnBall() {
-
-  }
-
   function refillFood() {
     food.fillFood(foodContext, gameBoundary);
   }
