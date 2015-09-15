@@ -15,11 +15,11 @@ var setProperties = function(foodContext) {
   foodContext.lineWidth = 1;
 };
 
-Food.prototype.fillFood = function(foodContext) {
+Food.prototype.fillFood = function(foodContext, gameBoundary) {
   while (this.foodCount < this.maxFood) {
     foodContext.beginPath();
-    var xCoord = Math.round(Math.random() * 990 + this.radius);
-    var yCoord = Math.round(Math.random() * 990 + this.radius);
+    var xCoord = Math.round(Math.random() * (gameBoundary - this.radius*2) + this.radius);
+    var yCoord = Math.round(Math.random() * (gameBoundary - this.radius*2) + this.radius);
     foodContext.arc(xCoord, yCoord, this.radius, 0, Math.PI * 2, true);
     this.foodPositions.push([xCoord, yCoord]);
     foodContext.closePath();

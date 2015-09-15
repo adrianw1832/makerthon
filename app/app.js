@@ -86,12 +86,12 @@ $(document).ready(function() {
   }
 
   function refillFood() {
-    food.fillFood(foodContext);
+    food.fillFood(foodContext, gameBoundary);
   }
 
   function init() {
     backgroundGrid();
-    food.fillFood(foodContext);
+    food.fillFood(foodContext, gameBoundary);
     setInterval(move, 30);
     setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
