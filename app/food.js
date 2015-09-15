@@ -7,6 +7,14 @@ function Food() {
 
 var randomColourGenerator = new RandomColourGenerator();
 
+var setProperties = function(foodContext) {
+  foodContext.fillStyle = randomColourGenerator.getRandomColour();
+  foodContext.fill();
+  foodContext.strokeStyle = randomColourGenerator.getRandomColour();
+  foodContext.stroke();
+  foodContext.lineWidth = 1;
+};
+
 Food.prototype.fillFood = function(foodContext) {
   while (this.foodCount < this.maxFood) {
     foodContext.beginPath();
@@ -18,12 +26,4 @@ Food.prototype.fillFood = function(foodContext) {
     setProperties(foodContext);
     this.foodCount++;
   }
-};
-
-var setProperties = function(foodContext) {
-  foodContext.fillStyle = randomColourGenerator.getRandomColour();
-  foodContext.fill();
-  foodContext.strokeStyle = randomColourGenerator.getRandomColour();
-  foodContext.stroke();
-  foodContext.lineWidth = 1;
 };
