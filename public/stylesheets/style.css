@@ -1,3 +1,8 @@
+input {
+  opacity: 0.8;
+  border-radius: 20px;
+}
+
 canvas {
   position: absolute;
   display: block;
@@ -9,8 +14,4 @@ canvas.ballCanvas {
 
 canvas.foodCanvas {
   margin: 250px;
-}
-
-.startGame {
-
 }
