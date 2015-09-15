@@ -74,9 +74,7 @@ $(document).ready(function() {
 
   function calculateBallVelocity(mouseX, mouseY) {
     var xdiff = mouseX - circle.xCoord;
-    console.log(xdiff);
     var ydiff = mouseY - circle.yCoord;
-    console.log(ydiff);
     var mouseToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
     var time = mouseToBallDistance / (defaultBallSpeed * sizeFactor());
     xVelocity = xdiff / time;
