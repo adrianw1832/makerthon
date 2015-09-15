@@ -1,8 +1,8 @@
 function Food() {
   this.foodCount = 0;
-  this.maxFood = 30;
+  this.maxFood = 300;
   this.foodPositions = [];
-  this.radius = 8;
+  this.radius = 12;
 }
 
 var randomColourGenerator = new RandomColourGenerator();

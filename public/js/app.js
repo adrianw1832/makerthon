@@ -7,12 +7,15 @@ $(document).ready(function() {
   var gridContext = gridCanvas.getContext("2d");
 
   //it seems that canvas has to be a square
-  var gameBoundary = 2000;
-  var xCoord = 750; var yCoord = 750;
-  var xVelocity = 0; var yVelocity = 0;
-  var defaultBallSpeed = 5;
+  var gameBoundary = 5000;
+  var gamePadding = 250;
+  var xCoord = 2500;
+  var yCoord = 2500;
+  var xVelocity = 0;
+  var yVelocity = 0;
+  var defaultBallSpeed = 10;
   var slowDownFactor = 0.25;
-  var defaultRadius = 15;
+  var defaultRadius = 20;
   var circle = new Circle(xCoord, yCoord, defaultRadius);
   var food = new Food();
 
@@ -20,9 +23,12 @@ $(document).ready(function() {
   var mouseY;
   var scrollSensitivity = 0.6;
 
-  ballCanvas.height = gameBoundary; ballCanvas.width = gameBoundary;
-  foodCanvas.height = gameBoundary; foodCanvas.width = gameBoundary;
-  gridCanvas.height = gameBoundary * 1.25; gridCanvas.width = gameBoundary * 1.25;
+  ballCanvas.height = gameBoundary;
+  ballCanvas.width = gameBoundary;
+  foodCanvas.height = gameBoundary;
+  foodCanvas.width = gameBoundary;
+  gridCanvas.height = gameBoundary + gamePadding * 2;
+  gridCanvas.width = gameBoundary + gamePadding * 2;
 
   function backgroundGrid() {
     var parameters = {
@@ -64,8 +70,8 @@ $(document).ready(function() {
   }
 
   function onMouseMove(page) {
-    mouseX = page.pageX;
-    mouseY = page.pageY;
+    mouseX = page.pageX - gamePadding;
+    mouseY = page.pageY - gamePadding;
     scrollPage(mouseX, mouseY);
     calculateBallVelocity(mouseX, mouseY);
   }
@@ -95,12 +101,18 @@ $(document).ready(function() {
     food.fillFood(foodContext, gameBoundary);
   }
 
+  function setStartLocation() {
+    $(document).scrollTop(circle.yCoord - gamePadding);
+    $(document).scrollLeft(circle.xCoord - gamePadding*3);
+  }
+
   function init() {
     backgroundGrid();
     food.fillFood(foodContext, gameBoundary);
     setInterval(move, 30);
     setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
+    setStartLocation();
   }
 
   init();
