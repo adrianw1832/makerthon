@@ -10,8 +10,8 @@ var randomColourGenerator = new RandomColourGenerator();
 Food.prototype.fillFood = function(foodContext) {
   while (this.foodCount < this.maxFood) {
     foodContext.beginPath();
-    var xCoord = Math.round(Math.random() * 1000);
-    var yCoord = Math.round(Math.random() * 1000);
+    var xCoord = Math.round(Math.random() * 990 + this.radius);
+    var yCoord = Math.round(Math.random() * 990 + this.radius);
     foodContext.arc(xCoord, yCoord, 5, 0, Math.PI * 2, true);
     this.foodPositions.push([xCoord, yCoord]);
     foodContext.closePath();
