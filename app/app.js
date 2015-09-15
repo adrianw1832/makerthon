@@ -18,6 +18,8 @@ $(document).ready(function() {
   var collisionPosition;
   var mouseX;
   var mouseY;
+  var delta = 0;
+  var scrollSensitivity = 0.015;
 
   ballCanvas.height = defaultHeight; ballCanvas.width = defaultWidth;
   foodCanvas.height = defaultHeight; foodCanvas.width = defaultWidth;
@@ -78,6 +80,7 @@ $(document).ready(function() {
   function onMouseMove(page) {
     mouseX = page.pageX;
     mouseY = page.pageY;
+    delta = (mouseY - defaultHeight / 2) * scrollSensitivity;
     calculateBallVelocity(mouseX, mouseY);
   }
 
@@ -89,6 +92,15 @@ $(document).ready(function() {
     xVelocity = xdiff / time;
     yVelocity = ydiff / time;
   }
+
+  (function scrollPageOnMousemove() {
+    if(delta) {
+        $('html, body').scrollTop(function(i, v) {
+            return v + delta;
+        });
+    }
+    webkitRequestAnimationFrame(scrollPageOnMousemove);
+  })();
 
   function sizeFactor() {
     return 1 - (circle.radius / defaultRadius - 1) * slowDownFactor;
