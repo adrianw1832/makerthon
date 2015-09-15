@@ -86,7 +86,6 @@ $(document).ready(function() {
       xVelocity = xdiff / time;
       yVelocity = ydiff / time;
     }
-    console.log(xVelocity);
   }
 
   function sizeFactor() {
