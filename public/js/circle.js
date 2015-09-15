@@ -2,6 +2,7 @@ function Circle(xCoord, yCoord, radius) {
   this.xCoord = xCoord;
   this.yCoord = yCoord;
   this.radius = radius;
+  this.playerPoints = 0;
 }
 
 var randomColour = new RandomColourGenerator().getRandomColour();
@@ -52,6 +53,7 @@ Circle.prototype.eatFood = function(foodContext, food) {
 Circle.prototype.getsBigger = function(eatenCircleRadius) {
   var originalCircle = Math.PI * this.radius * this.radius;
   var eatenCircle = Math.PI * eatenCircleRadius * eatenCircleRadius;
+  this.playerPoints += parseInt((eatenCircle / 4))
   var newRadius = Math.sqrt((originalCircle + eatenCircle) / Math.PI);
   this.radius = newRadius;
 }
