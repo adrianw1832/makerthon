@@ -58,14 +58,14 @@ $(document).ready(function() {
   function eatFood(foodContext, food) {
   if (circle.hasCollided(food)) {
     sendEatenPositions();
-    receiveFoodPositions();
+    // receiveFoodPositions();
     // var index = food.foodPositions.indexOf(circle.collisionPosition);
     // food.foodPositions.splice(index, 1);
     //foodContext.clearRect(circle.collisionPosition[0] - food.radius - 1.1, circle.collisionPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
     food.foodCount--;
     // circle.getsBigger(food.radius);
   }
-};
+}
   function hitsRightBoundary() {
     return ((circle.xCoord > gameBoundary - circle.radius*1.5) && mouseX >= circle.xCoord);
   }
@@ -164,11 +164,11 @@ $(document).ready(function() {
     socket.on('sendFoodPositions', function(data) {
       console.log(data.foodPos);
       food.fillFood(foodContext, data.foodPos);
-    })
+    });
   }
 
   function sendEatenPositions() {
-    socket.emit('sendEatenPositions', { eatenPosition: circle.collisionPosition })
+    socket.emit('sendEatenPositions', { eatenPosition: circle.collisionPosition });
   }
 
   $('.start-game').click(function() {
