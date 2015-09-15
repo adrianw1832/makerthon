@@ -52,20 +52,27 @@ $(document).ready(function() {
     if (mouseX) calculateBallVelocity();
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
-    // eatFood(foodContext, food);
+    eatFood(food);
+    deleteFood(foodContext, food);
   }
 
-  // function eatFood(foodContext, food) {
-  // if (circle.hasCollided(food)) {
-  //   sendEatenPositions();
-    // receiveFoodPositions();
-    // var index = food.foodPositions.indexOf(circle.collisionPosition);
-    // food.foodPositions.splice(index, 1);
-    //foodContext.clearRect(circle.collisionPosition[0] - food.radius - 1.1, circle.collisionPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
-    // food.foodCount--;
-    // circle.getsBigger(food.radius);
-//   }
-// }
+  function eatFood(food) {
+    if (circle.hasCollided(food)) {
+      sendEatenPosition();
+      circle.getsBigger(food.radius);
+    }
+  }
+
+  function deleteFood(foodContext, food) {
+    receiveEatenPosition();
+    if (circle.collisionPosition) {
+      var index = food.foodPositions.indexOf(circle.collisionPosition);
+      food.foodPositions.splice(index, 1);
+      foodContext.clearRect(circle.collisionPosition[0] - food.radius - 1.1, circle.collisionPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
+      food.foodCount--;
+    }
+  }
+
   function hitsRightBoundary() {
     return ((circle.xCoord > gameBoundary - circle.radius*1.5) && mouseX >= circle.xCoord);
   }
@@ -160,8 +167,14 @@ $(document).ready(function() {
     });
   }
 
-  function sendEatenPositions() {
-    socket.emit('sendEatenPositions', { eatenPosition: circle.collisionPosition });
+  function sendEatenPosition() {
+    socket.emit('sendEatenPosition', { eatenPosition: circle.collisionPosition });
+  }
+
+  function receiveEatenPosition(argument) {
+    socket.on('receiveEatenPosition', function(data) {
+      circle.collisionPosition = data.eatenPosition;
+    });
   }
 
   function receiveFoodInfo() {

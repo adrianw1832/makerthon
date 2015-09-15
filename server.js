@@ -27,18 +27,21 @@ io.on('connection', function (socket) {
   // socket.on('my other event', function (data) { console.log(data); });
   if(players === 1) { generateFoodInfo(); }
   socket.emit('sendFoodInfo', {foodPos: foodPositions, foodColour: randomColourArray});
-  socket.on('sendEatenPositions', function(data) {
-    console.log(data);
+  socket.on('sendEatenPosition', function(data) {
+    socket.emit('receiveEatenPosition', {eatenPosition: data.eatenPosition})
     var index = foodPositions.indexOf(data.eatenPosition);
     foodPositions.splice(index, 1);
   });
 });
+  // socket.on('sendEatenPosition', function(data) { console.log(data.eatenPosition); });
 
-function gameLoop() {
-  if(users.length > 0){
 
-  }
-}
+
+// function gameLoop() {
+//   if(users.length > 0){
+//
+//   }
+// }
 
 function generateFoodInfo() {
   generateFoodPositions();
