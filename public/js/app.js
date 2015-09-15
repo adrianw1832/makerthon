@@ -45,7 +45,7 @@ $(document).ready(function() {
     circle.draw(ballContext);
     if (hitsRightBoundary() || hitsLeftBoundary()) xVelocity = 0;
     if (hitsBottomBoundary() || hitsTopBoundary()) yVelocity = 0;
-    if (mouseX) calculateBallVelocity(mouseX, mouseY);
+    if (mouseX) calculateBallVelocity();
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
     circle.eatFood(foodContext, food);
@@ -70,17 +70,23 @@ $(document).ready(function() {
   function onMouseMove(page) {
     mouseX = page.pageX - gamePadding;
     mouseY = page.pageY - gamePadding;
-    scrollPage(mouseX, mouseY);
-    calculateBallVelocity(mouseX, mouseY);
+    scrollPage();
+    calculateBallVelocity();
   }
 
-  function calculateBallVelocity(mouseX, mouseY) {
+  function calculateBallVelocity() {
     var xdiff = mouseX - circle.xCoord;
     var ydiff = mouseY - circle.yCoord;
     var mouseToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
     var time = mouseToBallDistance / (defaultBallSpeed * sizeFactor());
-    xVelocity = xdiff / time;
-    yVelocity = ydiff / time;
+    if (mouseToBallDistance < circle.radius) {
+      xVelocity = 0;
+      yVelocity = 0;
+    } else {
+      xVelocity = xdiff / time;
+      yVelocity = ydiff / time;
+    }
+    console.log(xVelocity);
   }
 
   function sizeFactor() {
