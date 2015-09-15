@@ -20,7 +20,7 @@ Circle.prototype.drawName = function(ballContext, playerName) {
   ballContext.font = '20pt Calibri';
   ballContext.fillStyle = 'black';
   ballContext.fillText(playerName, this.xCoord - this.radius/2, this.yCoord);
-}
+};
 
 function getProperties(ballContext) {
   ballContext.fillStyle = randomColour;
@@ -34,18 +34,18 @@ function getProperties(ballContext) {
   ballContext.lineWidth = 5;
 }
 
-Circle.prototype.hasCollided = function(food) {
-  for (var i = 0; i < food.foodPositions.length; i++) {
-    var xdiff = this.xCoord - food.foodPositions[i][0];
-    var ydiff = this.yCoord - food.foodPositions[i][1];
-    var foodToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
-    if (foodToBallDistance < this.radius + food.radius) {
-      this.collisionPosition = food.foodPositions[i];
-      return true;
-    }
-  }
-  return false;
-};
+// Circle.prototype.hasCollided = function(food) {
+//   for (var i = 0; i < food.foodPositions.length; i++) {
+//     var xdiff = this.xCoord - food.foodPositions[i][0];
+//     var ydiff = this.yCoord - food.foodPositions[i][1];
+//     var foodToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
+//     if (foodToBallDistance < this.radius + food.radius) {
+//       this.collisionPosition = food.foodPositions[i];
+//       return true;
+//     }
+//   }
+//   return false;
+// };
 
 
 
