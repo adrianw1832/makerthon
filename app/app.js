@@ -7,24 +7,19 @@ $(document).ready(function() {
   var gridContext = gridCanvas.getContext("2d");
 
   //it seems that canvas has to be a square
-  var defaultHeight = 1000;
-  var defaultWidth = 1000;
-  var ballSpeed = 5;
-  var xCoord = 500;
-  var yCoord = 500;
-  var xVelocity = 0;
-  var yVelocity = 0;
-  var radius = 15;
-  var circle = new Circle(xCoord, yCoord, radius);
+  var defaultHeight = 1000; var defaultWidth = 1000;
+  var xCoord = 500; var yCoord = 500;
+  var xVelocity = 0; var yVelocity = 0;
+  var defaultBallSpeed = 5;
+  var slowDownFactor = 0.25;
+  var defaultRadius = 15;
+  var circle = new Circle(xCoord, yCoord, defaultRadius);
   var food = new Food();
   var collisionPosition;
 
-  ballCanvas.height = defaultHeight;
-  ballCanvas.width = defaultWidth;
-  foodCanvas.height = defaultHeight;
-  foodCanvas.width = defaultWidth;
-  gridCanvas.height = defaultHeight;
-  gridCanvas.width = defaultWidth;
+  ballCanvas.height = defaultHeight; ballCanvas.width = defaultWidth;
+  foodCanvas.height = defaultHeight; foodCanvas.width = defaultWidth;
+  gridCanvas.height = defaultHeight; gridCanvas.width = defaultWidth;
 
   function backgroundGrid() {
     var parameters = {
@@ -58,9 +53,13 @@ $(document).ready(function() {
     var xdiff = mouseX - circle.xCoord;
     var ydiff = mouseY - circle.yCoord;
     var mouseToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
-    var time = mouseToBallDistance / ballSpeed;
+    var time = mouseToBallDistance / (defaultBallSpeed * sizeFactor());
     xVelocity = xdiff / time;
     yVelocity = ydiff / time;
+  }
+
+  function sizeFactor() {
+    return 1 - (circle.radius / defaultRadius - 1) * slowDownFactor;
   }
 
   function hasCollided() {
