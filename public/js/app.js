@@ -104,6 +104,11 @@ $(document).ready(function() {
     previousYcoord = circle.yCoord;
   }
 
+  $(window).scroll(function() {
+    $('.leaderBoard').css({ position: 'fixed', top: '0px' })
+    $('h3').html('1. Leon : ' + circle.playerPoints)
+  })
+
   function init() {
     backgroundGrid();
     food.fillFood(foodContext, gameBoundary);
@@ -114,5 +119,23 @@ $(document).ready(function() {
     setStartLocation();
   }
 
-  init();
+  function startPage() {
+    $('.leaderBoard').hide();
+    $('input:text').keypress(function(event) {
+      if (event.keyCode == 13) {
+        $('.start-game').click();
+        $('.leaderBoard').show();
+        $('.startGame').hide();
+        init();
+      }
+    });
+    // $('.start-game').click(function() {
+    //   $('.leaderBoard').show();
+    //   $('.startGame').hide();
+    //   init();
+    // })
+  }
+
+  startPage();
+  // init();
 });
