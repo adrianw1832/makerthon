@@ -7,7 +7,7 @@ $(document).ready(function() {
   var gridContext = gridCanvas.getContext("2d");
 
   //it seems that canvas has to be a square
-  var defaultHeight = 1000; var defaultWidth = 1000;
+  var defaultHeight = 2000; var defaultWidth = 2000;
   var xCoord = 500; var yCoord = 500;
   var xVelocity = 0; var yVelocity = 0;
   var defaultBallSpeed = 5;
@@ -18,8 +18,7 @@ $(document).ready(function() {
   var collisionPosition;
   var mouseX;
   var mouseY;
-  var delta = 0;
-  var scrollSensitivity = 0.015;
+  var scrollSensitivity = 0.5;
 
   ballCanvas.height = defaultHeight; ballCanvas.width = defaultWidth;
   foodCanvas.height = defaultHeight; foodCanvas.width = defaultWidth;
@@ -71,7 +70,7 @@ $(document).ready(function() {
   function onMouseMove(page) {
     mouseX = page.pageX;
     mouseY = page.pageY;
-    delta = (mouseY - defaultHeight / 2) * scrollSensitivity;
+    scollPage(mouseX, mouseY);
     calculateBallVelocity(mouseX, mouseY);
   }
 
@@ -84,14 +83,13 @@ $(document).ready(function() {
     yVelocity = ydiff / time;
   }
 
-  (function scrollPageOnMousemove() {
-    if(delta) {
-        $('html, body').scrollTop(function(i, v) {
-            return v + delta;
-        });
-    }
-    webkitRequestAnimationFrame(scrollPageOnMousemove);
-  })();
+  var previousXCoord, previousYcoord;
+
+  function scollPage(mouseX, mouseY) {
+    if (previousXCoord && previousYcoord) window.scrollBy((mouseX - previousXCoord) * scrollSensitivity, (mouseY - previousYcoord) * scrollSensitivity);
+    previousXCoord = mouseX;
+    previousYcoord = mouseY;
+  }
 
   function sizeFactor() {
     return 1 - (circle.radius / defaultRadius - 1) * slowDownFactor;
