@@ -10,7 +10,7 @@ $(document).ready(function() {
   var gameBoundary = 1500;
   var xCoord = 750; var yCoord = 750;
   var xVelocity = 0; var yVelocity = 0;
-  var defaultBallSpeed = 5;
+  var defaultBallSpeed = 10;
   var slowDownFactor = 0.1;
   var defaultRadius = 15;
   var circle = new Circle(xCoord, yCoord, defaultRadius);
@@ -100,6 +100,13 @@ $(document).ready(function() {
     setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
   }
+
+
+    $(window).scroll(function() {
+      $('.leaderBoard').css({ position: 'fixed', top: '0px' })
+      $('h3').html('1. Leon : ' + circle.playerPoints)
+    });
+
 
   init();
 });
