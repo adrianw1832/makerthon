@@ -22,7 +22,7 @@ $(document).ready(function() {
 
   ballCanvas.height = defaultHeight; ballCanvas.width = defaultWidth;
   foodCanvas.height = defaultHeight; foodCanvas.width = defaultWidth;
-  gridCanvas.height = defaultHeight; gridCanvas.width = defaultWidth;
+  gridCanvas.height = defaultHeight * 1.25; gridCanvas.width = defaultWidth * 1.25;
 
   function backgroundGrid() {
     var parameters = {
