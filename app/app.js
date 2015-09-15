@@ -15,6 +15,7 @@ $(document).ready(function() {
   var defaultRadius = 15;
   var circle = new Circle(xCoord, yCoord, defaultRadius);
   var food = new Food();
+  var enterCounter = 0;
 
   var mouseX;
   var mouseY;
@@ -66,17 +67,17 @@ $(document).ready(function() {
     return ((circle.yCoord > gameBoundary - circle.radius) && mouseY >= circle.yCoord)
   }
 
-  // function splitsBallMove() {
-  //   ballContext.clearRect(0, 0, defaultHeight, defaultWidth);
-  //   circle.splitsInTwo(ballContext);
-  //   if (circle.xCoord > defaultWidth - circle.radius || circle.xCoord < circle.radius) xVelocity = -xVelocity;
-  //   if (circle.yCoord > defaultHeight - circle.radius || circle.yCoord < circle.radius) yVelocity = -yVelocity;
-  //   circle.xCoord += xVelocity;
-  //   circle.yCoord += yVelocity;
-  //   circle.twinXCoord += xVelocity;
-  //   circle.twinYCoord += yVelocity;
-  //   eatFood();
-  // }
+  function splitsBallMove() {
+    ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
+    circle.splitsInTwo(ballContext);
+    if (hitsRightBoundary() || hitsLeftBoundary()) xVelocity = 0;
+    if (hitsBottomBoundary() || hitsTopBoundary()) yVelocity = 0;
+    circle.xCoord += xVelocity;
+    circle.yCoord += yVelocity;
+    circle.twinXCoord += xVelocity;
+    circle.twinYCoord += yVelocity;
+    circle.eatFood(foodContext, food);
+  }
 
   function onMouseMove(page) {
     mouseX = page.pageX;
@@ -105,17 +106,18 @@ $(document).ready(function() {
   function init() {
     backgroundGrid();
     food.fillFood(foodContext, gameBoundary);
-    setInterval(move, 30);
+    setInterval(splitsBallMove, 30);
+    // setInterval(move, 30);
     setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
   }
 
-  // $(document).keypress(function(e) {
-  //   if (e.keyCode === 32) {
-  //     event.preventDefault();
-  //     splitsBallMove();
-  //   }
-  // });
+  $(document).keypress(function(e) {
+    if (e.keyCode === 13) {
+      event.preventDefault();
+      splitsBallMove();
+    }
+  });
 
 
   init();
