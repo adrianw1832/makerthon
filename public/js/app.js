@@ -110,9 +110,9 @@ $(document).ready(function() {
   }
 
   $(window).scroll(function() {
-    $('.leaderBoard').css({ position: 'fixed', top: '0px' })
-    $('h3').html('1. Leon : ' + circle.playerPoints)
-  })
+    $('.leaderBoard').css({ position: 'fixed', top: '0px' });
+    $('h3').html('1. Leon : ' + circle.playerPoints);
+  });
 
   function init() {
     backgroundGrid();
