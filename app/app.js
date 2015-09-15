@@ -66,7 +66,7 @@ $(document).ready(function() {
   function onMouseMove(page) {
     mouseX = page.pageX;
     mouseY = page.pageY;
-    scollPage(mouseX, mouseY);
+    scrollPage(mouseX, mouseY);
     calculateBallVelocity(mouseX, mouseY);
   }
 
@@ -81,7 +81,7 @@ $(document).ready(function() {
 
   var previousXCoord, previousYcoord;
 
-  function scollPage(mouseX, mouseY) {
+  function scrollPage(mouseX, mouseY) {
     if (previousXCoord && previousYcoord) window.scrollBy((mouseX - previousXCoord) * scrollSensitivity, (mouseY - previousYcoord) * scrollSensitivity);
     previousXCoord = mouseX;
     previousYcoord = mouseY;
