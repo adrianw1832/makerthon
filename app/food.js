@@ -1,5 +1,5 @@
 function Food() {
-  this.food = 0;
+  this.foodCount = 0;
   this.maxFood = 30;
   this.foodPositions = [];
   this.radius = 5;
@@ -8,7 +8,7 @@ function Food() {
 var randomColourGenerator = new RandomColourGenerator();
 
 Food.prototype.fillFood = function(foodContext) {
-  while (this.food < this.maxFood) {
+  while (this.foodCount < this.maxFood) {
     foodContext.beginPath();
     var xCoord = Math.round(Math.random() * 1000);
     var yCoord = Math.round(Math.random() * 1000);
@@ -16,7 +16,7 @@ Food.prototype.fillFood = function(foodContext) {
     this.foodPositions.push([xCoord, yCoord]);
     foodContext.closePath();
     setProperties(foodContext);
-    this.food++;
+    this.foodCount++;
   }
 };
 

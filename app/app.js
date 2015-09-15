@@ -80,6 +80,8 @@ $(document).ready(function() {
       var index = food.foodPositions.indexOf(collisionPosition);
       food.foodPositions.splice(index, 1);
       foodContext.clearRect(collisionPosition[0] - food.radius - 1.1, collisionPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
+      food.foodCount--;
+      console.log(food.foodCount);
       getsBigger(food.radius);
     }
   }
@@ -91,10 +93,15 @@ $(document).ready(function() {
     circle.radius = newRadius;
   }
 
+  function refillFood() {
+    food.fillFood(foodContext);
+  }
+
   function init() {
     backgroundGrid();
+    food.fillFood(foodContext);
     setInterval(move, 30);
-    setInterval(food.fillFood(foodContext), 6000);
+    setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
   }
 
