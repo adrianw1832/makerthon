@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  var socket = io.connect('http://localhost:3000');
   var ballCanvas = $(".ballCanvas")[0];
   var foodCanvas = $(".foodCanvas")[0];
   var gridCanvas = $(".gridCanvas")[0];
@@ -8,7 +9,6 @@ $(document).ready(function() {
 
   var playerName;
 
-  //it seems that canvas has to be a square
   var gameBoundary = 2500;
   var gamePadding = 250;
   var xCoord = gameBoundary/2;
@@ -18,6 +18,7 @@ $(document).ready(function() {
   var defaultBallSpeed = 10;
   var slowDownFactor = 0.05;
   var defaultRadius = 15;
+  var currentPlayer = {};
   var circle = new Circle(xCoord, yCoord, defaultRadius);
   var food = new Food(gameBoundary);
 
@@ -51,7 +52,7 @@ $(document).ready(function() {
     if (mouseX) calculateBallVelocity();
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
-    circle.eatFood(foodContext, food);
+    // circle.eatFood(foodContext, food);
   }
 
   function hitsRightBoundary() {
@@ -118,11 +119,12 @@ $(document).ready(function() {
   });
 
   function init() {
+    console.log(currentPlayer);
     backgroundGrid();
-    food.fillFood(foodContext, gameBoundary);
+    // food.fillFood(foodPositions); we need another websocket that gives the food positions so that the canvas can render them
     setInterval(move, 25);
     setInterval(scrollPage, 25);
-    setInterval(refillFood, 30000);
+    // setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
     setStartLocation();
   }
@@ -137,6 +139,23 @@ $(document).ready(function() {
     });
   }
 
+  function socketConnection() {
+    socket.on('player info', function(data) {
+      currentPlayer.id = data.playerId;
+      currentPlayer.circle = circle;
+      socket.emit('my other event', { my: currentPlayer });
+      startPage();
+      receiveFoodPositions();
+    });
+  }
+
+  function receiveFoodPositions() {
+    socket.on('sendFoodPositions', function(data) {
+      console.log(data.foodPos);
+      food.fillFood(foodContext, data.foodPos);
+    })
+  }
+
   $('.start-game').click(function() {
     $('.leaderBoard').show();
     $('.startGame').hide();
@@ -144,6 +163,6 @@ $(document).ready(function() {
     init();
   });
 
-  startPage();
+  socketConnection();
 
 });
