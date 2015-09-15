@@ -15,6 +15,12 @@ Circle.prototype.draw = function(ballContext) {
   getProperties(ballContext);
 };
 
+Circle.prototype.drawName = function(ballContext, playerName) {
+  ballContext.font = '20pt Calibri';
+  ballContext.fillStyle = 'black';
+  ballContext.fillText(playerName, this.xCoord - this.radius/2, this.yCoord);
+}
+
 function getProperties(ballContext) {
   ballContext.fillStyle = randomColour;
   ballContext.fill();
@@ -38,7 +44,7 @@ Circle.prototype.hasCollided = function(food) {
     }
   }
   return false;
-}
+};
 
 Circle.prototype.eatFood = function(foodContext, food) {
   if (this.hasCollided(food)) {
@@ -48,12 +54,12 @@ Circle.prototype.eatFood = function(foodContext, food) {
     food.foodCount--;
     this.getsBigger(food.radius);
   }
-}
+};
 
 Circle.prototype.getsBigger = function(eatenCircleRadius) {
   var originalCircle = Math.PI * this.radius * this.radius;
   var eatenCircle = Math.PI * eatenCircleRadius * eatenCircleRadius;
-  this.playerPoints += parseInt((eatenCircle / 4))
+  this.playerPoints += parseInt((eatenCircleRadius / 2));
   var newRadius = Math.sqrt((originalCircle + eatenCircle) / Math.PI);
   this.radius = newRadius;
-}
+};

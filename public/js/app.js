@@ -7,25 +7,30 @@ $(document).ready(function() {
   var foodContext = foodCanvas.getContext("2d");
   var gridContext = gridCanvas.getContext("2d");
 
+  var playerName;
+
   //it seems that canvas has to be a square
-  var gameBoundary = 2000;
-  var xCoord = 750; var yCoord = 750;
-  var xVelocity = 0; var yVelocity = 0;
-  var defaultBallSpeed = 5;
-  var slowDownFactor = 0.25;
+  var gameBoundary = 2500;
+  var gamePadding = 250;
+  var xCoord = gameBoundary/2;
+  var yCoord = gameBoundary/2;
+  var xVelocity = 0;
+  var yVelocity = 0;
+  var defaultBallSpeed = 10;
+  var slowDownFactor = 0.05;
   var defaultRadius = 15;
   var currentPlayer = {};
   var circle = new Circle(xCoord, yCoord, defaultRadius);
-  var food = new Food();
+  var food = new Food(gameBoundary);
 
+  var mouseX, mouseY;
 
-  var mouseX;
-  var mouseY;
-  var scrollSensitivity = 0.6;
-
-  ballCanvas.height = gameBoundary; ballCanvas.width = gameBoundary;
-  foodCanvas.height = gameBoundary; foodCanvas.width = gameBoundary;
-  gridCanvas.height = gameBoundary * 1.25; gridCanvas.width = gameBoundary * 1.25;
+  ballCanvas.height = gameBoundary;
+  ballCanvas.width = gameBoundary;
+  foodCanvas.height = gameBoundary;
+  foodCanvas.width = gameBoundary;
+  gridCanvas.height = gameBoundary + gamePadding * 2;
+  gridCanvas.width = gameBoundary + gamePadding * 2;
 
   function backgroundGrid() {
     var parameters = {
@@ -42,52 +47,50 @@ $(document).ready(function() {
   function move() {
     ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
     circle.draw(ballContext);
+    circle.drawName(ballContext,playerName);
     if (hitsRightBoundary() || hitsLeftBoundary()) xVelocity = 0;
     if (hitsBottomBoundary() || hitsTopBoundary()) yVelocity = 0;
-    if (mouseX) calculateBallVelocity(mouseX, mouseY);
+    if (mouseX) calculateBallVelocity();
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
     circle.eatFood(foodContext, food);
   }
 
   function hitsRightBoundary() {
-    return ((circle.xCoord > gameBoundary - circle.radius) && mouseX >= circle.xCoord);
+    return ((circle.xCoord > gameBoundary - circle.radius*1.5) && mouseX >= circle.xCoord);
   }
 
   function hitsLeftBoundary() {
-    return (circle.xCoord < circle.radius && mouseX <= circle.xCoord);
+    return (circle.xCoord < circle.radius *1.5 && mouseX <= circle.xCoord);
   }
 
   function hitsTopBoundary() {
-    return (circle.yCoord < circle.radius && mouseY <= circle.yCoord);
+    return (circle.yCoord < circle.radius *1.5 && mouseY <= circle.yCoord);
   }
 
   function hitsBottomBoundary() {
-    return ((circle.yCoord > gameBoundary - circle.radius) && mouseY >= circle.yCoord);
+    return ((circle.yCoord > gameBoundary - circle.radius *1.5) && mouseY >= circle.yCoord);
   }
 
   function onMouseMove(page) {
-    mouseX = page.pageX;
-    mouseY = page.pageY;
-    scrollPage(mouseX, mouseY);
-    calculateBallVelocity(mouseX, mouseY);
+    mouseX = page.pageX - gamePadding;
+    mouseY = page.pageY - gamePadding;
+    scrollPage();
+    calculateBallVelocity();
   }
 
-  function calculateBallVelocity(mouseX, mouseY) {
+  function calculateBallVelocity() {
     var xdiff = mouseX - circle.xCoord;
     var ydiff = mouseY - circle.yCoord;
     var mouseToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
     var time = mouseToBallDistance / (defaultBallSpeed * sizeFactor());
-    xVelocity = xdiff / time;
-    yVelocity = ydiff / time;
-  }
-
-  var previousXCoord, previousYcoord;
-
-  function scrollPage(mouseX, mouseY) {
-    if (previousXCoord && previousYcoord) window.scrollBy((mouseX - previousXCoord) * scrollSensitivity, (mouseY - previousYcoord) * scrollSensitivity);
-    previousXCoord = mouseX;
-    previousYcoord = mouseY;
+    if (mouseToBallDistance < circle.radius) {
+      xVelocity = 0;
+      yVelocity = 0;
+    } else {
+      xVelocity = xdiff / time;
+      yVelocity = ydiff / time;
+    }
   }
 
   function sizeFactor() {
@@ -104,19 +107,56 @@ $(document).ready(function() {
       currentPlayer.id = data.playerId;
       currentPlayer.circle = circle;
       socket.emit('my other event', { my: currentPlayer });
-      init();
+      startPage();
     });
   }
+
+  function setStartLocation() {
+    $(document).scrollTop(circle.yCoord - gamePadding);
+    $(document).scrollLeft(circle.xCoord - gamePadding * 3);
+  }
+
+  var previousXCoord, previousYcoord;
+
+  function scrollPage() {
+    if (previousXCoord && previousYcoord) window.scrollBy(circle.xCoord - previousXCoord, circle.yCoord - previousYcoord);
+    previousXCoord = circle.xCoord;
+    previousYcoord = circle.yCoord;
+  }
+
+  $(window).scroll(function() {
+    $('.leaderBoard').css({ position: 'fixed', top: '0px' });
+    $('h3').html('1. ' + playerName + ' : ' + circle.playerPoints);
+  });
 
   function init() {
     console.log(currentPlayer);
     backgroundGrid();
     food.fillFood(foodContext, gameBoundary);
-    setInterval(move, 30);
+    setInterval(move, 25);
+    setInterval(scrollPage, 25);
     setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
+    setStartLocation();
   }
 
+  function startPage() {
+    $('.leaderBoard').hide();
+    $('input:text').keypress(function(event) {
+      if (event.keyCode == 13) {
+        $('.start-game').click();
+        playerName = $('.player-name').val();
+      }
+    });
+  }
+
+  $('.start-game').click(function() {
+    $('.leaderBoard').show();
+    $('.startGame').hide();
+    playerName = $('.player-name').val();
+    init();
+  });
+
   testSocket();
-  // init();
+
 });

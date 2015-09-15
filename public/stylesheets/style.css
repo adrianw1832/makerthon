@@ -1,18 +1,16 @@
-.ballCanvas {
-  border: 2px solid black;
+canvas {
   position: absolute;
-  left: 0;
-  top: 0;
+  display: block;
 }
 
-.foodCanvas {
-  position: absolute;
-  left: 0;
-  top: 0;
+canvas.ballCanvas {
+  margin: 250px;
 }
 
-.gridCanvas {
-  position: absolute;
-  left: 0;
-  top: 0;
+canvas.foodCanvas {
+  margin: 250px;
+}
+
+.startGame {
+
 }
