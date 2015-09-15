@@ -13,6 +13,12 @@ app.get('/', function (req, res) {
 });
 
 io.on('connection', function (socket) {
-  socket.emit('news', { hello: 'world' });
-  socket.on('newGame', init);
+  console.log('a user is connected');
+  var currentPlayer = {
+    id: socket.id
+  };
+  socket.emit('player info', { playerId: socket.id})
+  socket.on('my other event', function (data) {
+    console.log(data);
+  })
 });

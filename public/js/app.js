@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  var socket = io.connect('http://localhost:3000');
   var ballCanvas = $(".ballCanvas")[0];
   var foodCanvas = $(".foodCanvas")[0];
   var gridCanvas = $(".gridCanvas")[0];
@@ -13,8 +14,10 @@ $(document).ready(function() {
   var defaultBallSpeed = 5;
   var slowDownFactor = 0.25;
   var defaultRadius = 15;
+  var currentPlayer = {};
   var circle = new Circle(xCoord, yCoord, defaultRadius);
   var food = new Food();
+
 
   var mouseX;
   var mouseY;
@@ -95,12 +98,18 @@ $(document).ready(function() {
     food.fillFood(foodContext, gameBoundary);
   }
 
+  function testSocket() {
+    socket.on('player info', function(data) {
+      // console.log(data);
+      currentPlayer.id = data.playerId;
+      currentPlayer.circle = circle;
+      socket.emit('my other event', { my: currentPlayer });
+      init();
+    });
+  }
+
   function init() {
-    // var socket = io.connect('http://localhost');
-    // socket.on('news', function(data) {
-    //   console.log(data);
-    //   socket.emit('my other event', { my: 'data'});
-    // });
+    console.log(currentPlayer);
     backgroundGrid();
     food.fillFood(foodContext, gameBoundary);
     setInterval(move, 30);
@@ -108,5 +117,6 @@ $(document).ready(function() {
     ballCanvas.addEventListener("mousemove", onMouseMove);
   }
 
-  init();
+  testSocket();
+  // init();
 });
