@@ -14,7 +14,7 @@ $(document).ready(function() {
   var xVelocity = 0;
   var yVelocity = 0;
   var defaultBallSpeed = 10;
-  var slowDownFactor = 0.1;
+  var slowDownFactor = 0.05;
   var defaultRadius = 15;
   var circle = new Circle(xCoord, yCoord, defaultRadius);
   var food = new Food(gameBoundary);
