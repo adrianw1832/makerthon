@@ -145,15 +145,14 @@ $(document).ready(function() {
       currentPlayer.circle = circle;
       socket.emit('my other event', { my: currentPlayer });
       startPage();
-      receiveFoodPositions();
+      receiveFoodInfo();
     });
   }
 
-  function receiveFoodPositions() {
-    socket.on('sendFoodPositions', function(data) {
-      console.log(data.foodPos);
-      food.fillFood(foodContext, data.foodPos);
-    })
+  function receiveFoodInfo() {
+    socket.on('sendFoodInfo', function(data) {
+      food.fillFood(foodContext, data.foodPos, data.foodColour);
+    });
   }
 
   $('.start-game').click(function() {
