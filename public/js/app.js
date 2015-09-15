@@ -7,18 +7,16 @@ $(document).ready(function() {
   var gridContext = gridCanvas.getContext("2d");
 
   //it seems that canvas has to be a square
-  var gameBoundary = 2000;
+  var gameBoundary = 1500;
   var xCoord = 750; var yCoord = 750;
   var xVelocity = 0; var yVelocity = 0;
   var defaultBallSpeed = 5;
-  var slowDownFactor = 0.25;
+  var slowDownFactor = 0.1;
   var defaultRadius = 15;
   var circle = new Circle(xCoord, yCoord, defaultRadius);
   var food = new Food();
 
-  var mouseX;
-  var mouseY;
-  var scrollSensitivity = 0.6;
+  var mouseX, mouseY;
 
   ballCanvas.height = gameBoundary; ballCanvas.width = gameBoundary;
   foodCanvas.height = gameBoundary; foodCanvas.width = gameBoundary;
@@ -66,7 +64,6 @@ $(document).ready(function() {
   function onMouseMove(page) {
     mouseX = page.pageX;
     mouseY = page.pageY;
-    scrollPage(mouseX, mouseY);
     calculateBallVelocity(mouseX, mouseY);
   }
 
@@ -79,14 +76,6 @@ $(document).ready(function() {
     yVelocity = ydiff / time;
   }
 
-  var previousXCoord, previousYcoord;
-
-  function scrollPage(mouseX, mouseY) {
-    if (previousXCoord && previousYcoord) window.scrollBy((mouseX - previousXCoord) * scrollSensitivity, (mouseY - previousYcoord) * scrollSensitivity);
-    previousXCoord = mouseX;
-    previousYcoord = mouseY;
-  }
-
   function sizeFactor() {
     return 1 - (circle.radius / defaultRadius - 1) * slowDownFactor;
   }
@@ -95,10 +84,19 @@ $(document).ready(function() {
     food.fillFood(foodContext, gameBoundary);
   }
 
+  var previousXCoord, previousYcoord;
+
+  function scrollPage() {
+    if (previousXCoord && previousYcoord) window.scrollBy(circle.xCoord - previousXCoord, circle.yCoord - previousYcoord);
+    previousXCoord = circle.xCoord;
+    previousYcoord = circle.yCoord;
+  }
+
   function init() {
     backgroundGrid();
     food.fillFood(foodContext, gameBoundary);
     setInterval(move, 30);
+    setInterval(scrollPage, 30);
     setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
   }
