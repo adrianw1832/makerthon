@@ -15,6 +15,7 @@ $(document).ready(function() {
   var defaultRadius = 15;
   var circle = new Circle(xCoord, yCoord, defaultRadius);
   var food = new Food();
+  var enterCounter = 0;
 
   var mouseX;
   var mouseY;
@@ -63,6 +64,18 @@ $(document).ready(function() {
     return ((circle.yCoord > gameBoundary - circle.radius) && mouseY >= circle.yCoord);
   }
 
+  function splitsBallMove() {
+    ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
+    circle.splitsInTwo(ballContext);
+    if (hitsRightBoundary() || hitsLeftBoundary()) xVelocity = 0;
+    if (hitsBottomBoundary() || hitsTopBoundary()) yVelocity = 0;
+    circle.xCoord += xVelocity;
+    circle.yCoord += yVelocity;
+    circle.twinXCoord += xVelocity;
+    circle.twinYCoord += yVelocity;
+    circle.eatFood(foodContext, food);
+  }
+
   function onMouseMove(page) {
     mouseX = page.pageX;
     mouseY = page.pageY;
@@ -95,13 +108,25 @@ $(document).ready(function() {
     food.fillFood(foodContext, gameBoundary);
   }
 
+
   function init() {
     backgroundGrid();
     food.fillFood(foodContext, gameBoundary);
-    setInterval(move, 30);
+    setInterval(splitsBallMove, 30);
+    // setInterval(move, 30);
     setInterval(refillFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
   }
 
+  $(document).keypress(function(e) {
+    if (e.keyCode === 13) {
+      event.preventDefault();
+      splitsBallMove();
+    }
+  });
+
+
   init();
+
+
 });
