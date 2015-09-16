@@ -92,8 +92,10 @@ $(document).ready(function() {
 
   function eatFood() {
     if (circle.hasCollided(food)) {
-      socket.emit('sendEatenPosition', { eatenPosition: circle.collisionPosition });
-      deleteFood(circle.collisionPosition);
+      var collisionPosition = circle.collisionPosition;
+      var collisionPositionIndex = food.foodPositions.indexOf(collisionPosition);
+      socket.emit('sendEatenPosition', { eatenPosition: collisionPosition, eatenPositionIndex: collisionPositionIndex });
+      deleteFood(collisionPosition);
       circle.getsBigger(food.radius);
     }
   }
@@ -153,8 +155,19 @@ $(document).ready(function() {
   });
 
   socket.on('receiveEatenPosition', function(data) {
-    deleteFood(data.position);
+    deleteFoodArray(data.position);
   });
+
+  function deleteFoodArray(array) {
+    if (array.length !== 0) {
+      for (var i = 0; i < array.length; i++) {
+        var index = food.foodPositions.indexOf(array[i]);
+        if (index > 0) food.foodPositions.splice(index, 1);
+        foodContext.clearRect(array[i][0] - food.radius - 1.1, array[i][1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
+        food.foodCount--;
+      }
+    }
+  }
 
   function deleteFood(eatenPosition) {
     if (!!eatenPosition) {
