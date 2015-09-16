@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  var socket = io.connect('http://localhost:3000');
+  var socket = io.connect('https://agarioblacg.herokuapp.com/');
   var ballCanvas = $(".ballCanvas")[0];
   var foodCanvas = $(".foodCanvas")[0];
   var gridCanvas = $(".gridCanvas")[0];
