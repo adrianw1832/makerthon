@@ -40,6 +40,7 @@ $(document).ready(function() {
   }
 
   function move() {
+    ballContext.clearRect(0, 0, gameBoundary, gameBoundary)
     circle.draw(ballContext);
     circle.drawName(ballContext,playerName);
     // if(opponentCircle !== undefined) {
@@ -199,9 +200,9 @@ $(document).ready(function() {
 
   function init() {
     backgroundGrid();
-    setInterval(move, 1000/60);
-    setInterval(eatFood, 1000 / 60);
-    setInterval(scrollPage, 1000 / 60);
+    setInterval(move, 1000/40);
+    setInterval(eatFood, 1000 / 40);
+    setInterval(scrollPage, 1000 / 40);
     // setInterval(drawFood, 30000);
     ballCanvas.addEventListener("mousemove", onMouseMove);
     setStartLocation();

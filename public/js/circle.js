@@ -18,18 +18,18 @@ var randomColour = new RandomColourGenerator().getRandomColour();
 var collisionPosition;
 
 Circle.prototype.draw = function(ballContext) {
-  this.clearBall(ballContext);
+  // this.clearBall(ballContext);
   ballContext.beginPath();
-  ballContext.arc(this.xCoord, this.yCoord, this.radius, 0, 3.142 * 2, true);
+  ballContext.arc(this.xCoord, this.yCoord, this.radius, 0, Math.PI * 2, true);
   ballContext.closePath();
   getProperties(ballContext);
-  this.prevX = this.xCoord;
-  this.prevY = this.yCoord;
+  // this.prevX = this.xCoord;
+  // this.prevY = this.yCoord;
 };
 
-Circle.prototype.clearBall = function(ballContext) {
-  ballContext.clearRect(this.prevX - this.radius - 5, this.prevY - this.radius - 5, this.radius * 2 + 10, this.radius * 2 + 10);
-};
+// Circle.prototype.clearBall = function(ballContext) {
+//   ballContext.clearRect(this.prevX - this.radius - 5, this.prevY - this.radius - 5, this.radius * 2 + 10, this.radius * 2 + 10);
+// };
 
 Circle.prototype.drawName = function(ballContext, playerName) {
   ballContext.font = '18pt Calibri';
