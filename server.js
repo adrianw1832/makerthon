@@ -29,9 +29,8 @@ io.on('connection', function (socket) {
   if(players === 1) { generateFoodInfo(); }
   socket.emit('sendFoodInfo', {foodPos: foodPositions, foodColour: randomColourArray});
   socket.on('sendEatenPosition', function(data) {
-    var index = foodPositions.indexOf(data.eatenPosition);
-    foodPositions.splice(index, 1);
-    randomColourArray.splice(index, 1);
+    foodPositions.splice(data.eatenPositionIndex, 1);
+    randomColourArray.splice(data.eatenPositionIndex, 1);
     eatenPositions.push(data.eatenPosition);
   });
   setInterval(test, 25);
