@@ -4,6 +4,7 @@ function Circle(xCoord, yCoord, radius) {
   this.radius = radius;
   this.playerPoints = 0;
   this.collisionPosition;
+  this.playerID;
 }
 
 var randomColour = new RandomColourGenerator().getRandomColour();

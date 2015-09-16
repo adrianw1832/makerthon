@@ -47,11 +47,36 @@ $(document).ready(function() {
     ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
     circle.draw(ballContext);
     circle.drawName(ballContext,playerName);
+    console.log(circle.ID);
     if (hitsRightBoundary() || hitsLeftBoundary()) xVelocity = 0;
     if (hitsBottomBoundary() || hitsTopBoundary()) yVelocity = 0;
     if (mouseX) calculateBallVelocity();
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
+    NewCirclePositions();
+    UpdateCirclePositions();
+    DrawOpponentCircle();
+  }
+
+  function DrawOpponentCircle() {
+    socket.on('DrawOpponentCircle', function(data) {
+      console.log("Opponent " + data.circle.playerID);
+    });
+  }
+
+  function NewCirclePositions() {
+    socket.emit('NewCirclePositions', { circlePositions: circle })
+  }
+
+  function UpdateCirclePositions() {
+    socket.on('UpdateCirclePositions', function (data) {
+      var circleInfo = data.circleData;
+      console.log(circleInfo[circleInfo.length - 1]);
+      // circle.ID = circleInfo.playerID;
+      // circle.xCoord = data.circleData.xCoord;
+      // circle.yCoord = data.circleData.yCoord;
+      // circle.ID = data.circleData.playerID;
+    });
   }
 
   function eatFood() {
@@ -135,8 +160,9 @@ $(document).ready(function() {
 
   socket.on('player info', function(data) {
     currentPlayer.id = data.playerId;
+    circle.playerID = data.playerId;
     currentPlayer.circle = circle;
-    socket.emit('my other event', { my: currentPlayer });
+    socket.emit('player object info', { player: currentPlayer });
     startPage();
   });
 
@@ -159,7 +185,7 @@ $(document).ready(function() {
 
   function init() {
     backgroundGrid();
-    setInterval(move, 25);
+    setInterval(move, 5000);
     setInterval(eatFood, 25);
     setInterval(scrollPage, 25);
     // setInterval(refillFood, 30000);
