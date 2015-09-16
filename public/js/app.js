@@ -52,24 +52,13 @@ $(document).ready(function() {
     if (mouseX) calculateBallVelocity();
     circle.xCoord += xVelocity;
     circle.yCoord += yVelocity;
-    eatFood(food);
-    deleteFood(foodContext, food);
   }
 
-  function eatFood(food) {
+  function eatFood() {
     if (circle.hasCollided(food)) {
-      sendEatenPosition();
+      socket.emit('sendEatenPosition', { eatenPosition: circle.collisionPosition });
+      deleteFood(circle.collisionPosition);
       circle.getsBigger(food.radius);
-    }
-  }
-
-  function deleteFood(foodContext, food) {
-    receiveEatenPosition();
-    if (circle.collisionPosition) {
-      var index = food.foodPositions.indexOf(circle.collisionPosition);
-      food.foodPositions.splice(index, 1);
-      foodContext.clearRect(circle.collisionPosition[0] - food.radius - 1.1, circle.collisionPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
-      food.foodCount--;
     }
   }
 
@@ -114,15 +103,6 @@ $(document).ready(function() {
     return 1 - (circle.radius / defaultRadius - 1) * slowDownFactor;
   }
 
-  function refillFood() {
-    food.fillFood(foodContext, gameBoundary);
-  }
-
-  function setStartLocation() {
-    $(document).scrollTop(circle.yCoord - gamePadding);
-    $(document).scrollLeft(circle.xCoord - gamePadding * 3);
-  }
-
   var previousXCoord, previousYcoord;
 
   function scrollPage() {
@@ -136,16 +116,29 @@ $(document).ready(function() {
     $('h3').html('1. ' + playerName + ' : ' + circle.playerPoints);
   });
 
-  function init() {
-    console.log(currentPlayer);
-    backgroundGrid();
-    // food.fillFood(foodPositions); we need another websocket that gives the food positions so that the canvas can render them
-    setInterval(move, 25);
-    setInterval(scrollPage, 25);
-    // setInterval(refillFood, 30000);
-    ballCanvas.addEventListener("mousemove", onMouseMove);
-    setStartLocation();
+  socket.on('receiveEatenPosition', function(data) {
+    deleteFood(data.position);
+  });
+
+  function deleteFood(eatenPosition) {
+    if (!!eatenPosition) {
+      var index = food.foodPositions.indexOf(eatenPosition);
+      if (index > 0) food.foodPositions.splice(index, 1);
+      foodContext.clearRect(eatenPosition[0] - food.radius - 1.1, eatenPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
+      food.foodCount--;
+    }
   }
+
+  socket.on('sendFoodInfo', function(data) {
+    food.fillFood(foodContext, data.foodPos, data.foodColour);
+  });
+
+  socket.on('player info', function(data) {
+    currentPlayer.id = data.playerId;
+    currentPlayer.circle = circle;
+    socket.emit('my other event', { my: currentPlayer });
+    startPage();
+  });
 
   function startPage() {
     $('.leaderBoard').hide();
@@ -157,32 +150,6 @@ $(document).ready(function() {
     });
   }
 
-  function socketConnection() {
-    socket.on('player info', function(data) {
-      currentPlayer.id = data.playerId;
-      currentPlayer.circle = circle;
-      socket.emit('my other event', { my: currentPlayer });
-      startPage();
-      receiveFoodInfo();
-    });
-  }
-
-  function sendEatenPosition() {
-    socket.emit('sendEatenPosition', { eatenPosition: circle.collisionPosition });
-  }
-
-  function receiveEatenPosition(argument) {
-    socket.on('receiveEatenPosition', function(data) {
-      circle.collisionPosition = data.eatenPosition;
-    });
-  }
-
-  function receiveFoodInfo() {
-    socket.on('sendFoodInfo', function(data) {
-      food.fillFood(foodContext, data.foodPos, data.foodColour);
-    });
-  }
-
   $('.start-game').click(function() {
     $('.leaderBoard').show();
     $('.startGame').hide();
@@ -190,6 +157,18 @@ $(document).ready(function() {
     init();
   });
 
-  socketConnection();
+  function init() {
+    backgroundGrid();
+    setInterval(move, 25);
+    setInterval(eatFood, 25);
+    setInterval(scrollPage, 25);
+    // setInterval(refillFood, 30000);
+    ballCanvas.addEventListener("mousemove", onMouseMove);
+    setStartLocation();
+  }
 
+  function setStartLocation() {
+    $(document).scrollTop(circle.yCoord - gamePadding);
+    $(document).scrollLeft(circle.xCoord - gamePadding * 3);
+  }
 });

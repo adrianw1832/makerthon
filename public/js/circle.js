@@ -40,11 +40,11 @@ Circle.prototype.hasCollided = function(food) {
     var ydiff = this.yCoord - food.foodPositions[i][1];
     var foodToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
     if (foodToBallDistance < this.radius + food.radius) {
-      console.log(food.foodPositions[i])
       this.collisionPosition = food.foodPositions[i];
       return true;
     }
   }
+  this.collisionPosition = null;
   return false;
 };
 
