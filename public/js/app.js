@@ -41,11 +41,11 @@ $(document).ready(function() {
   }
 
   function move() {
-    ballContext.clearRect(0, 0, gameBoundary, gameBoundary)
+    ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
     circle.draw(ballContext);
     circle.drawName(ballContext,playerName);
     // if(opponentCircle !== undefined) {
-      opponentCircle.draw(ballContext);
+    // opponentCircle.draw(ballContext);
     //}
     if (hitsRightBoundary() || hitsLeftBoundary()) circle.xVelocity = 0;
     if (hitsBottomBoundary() || hitsTopBoundary()) circle.yVelocity = 0;
@@ -57,7 +57,7 @@ $(document).ready(function() {
   }
 
   function NewCirclePositions() {
-    socket.emit('NewCirclePositions', { circlePositions: circle })
+    socket.emit('NewCirclePositions', { circlePositions: circle });
   }
 
   function UpdateCirclePositions() {
@@ -67,11 +67,11 @@ $(document).ready(function() {
       // console.log("Circle ID: " + receivedCircle.ID);
       // console.log(receivedCircle);
       // console.log("Player ID: " + circle.playerID);
-      if (receivedCircle.playerID === circle.playerID) {
-        circle.xCoord = receivedCircle.xCoord;
-        circle.yCoord = receivedCircle.yCoord;
-        circle.radius = receivedCircle.radius;
-      }
+      // if (receivedCircle.playerID === circle.playerID) {
+      //   circle.xCoord = receivedCircle.xCoord;
+      //   circle.yCoord = receivedCircle.yCoord;
+      //   circle.radius = receivedCircle.radius;
+      // }
 
       if (receivedCircle.playerID !== circle.playerID) {
         //opponentCircle = new Circle(receivedCircle.xCoord, receivedCircle.yCoord, receivedCircle.radius);
@@ -125,8 +125,8 @@ $(document).ready(function() {
       circle.xVelocity = 0;
       circle.yVelocity = 0;
     } else {
-      circle.xVelocity = xdiff / time;
-      circle.yVelocity = ydiff / time;
+      circle.xVelocity = Math.round(xdiff / time);
+      circle.yVelocity = Math.round(ydiff / time);
     }
   }
 
@@ -166,18 +166,18 @@ $(document).ready(function() {
     }
   }
 
-  socket.on('receiveCurrentScore', function(data) {
-    displayScore(data.score);
-  });
-
-  function displayScore(scoreArray) {
-    $('h3').html('');
-    var leaderBoard = $('<span>');
-    for (var i = 0; i < scoreArray.length; i++) {
-      leaderBoard.append(scoreArray[i].player + ' : ' + scoreArray[i].currentScore + ' ');
-    }
-    $('h3').html(leaderBoard);
-  }
+  // socket.on('receiveCurrentScore', function(data) {
+  //   displayScore(data.score);
+  // });
+  //
+  // function displayScore(scoreArray) {
+  //   $('h3').html('');
+  //   var leaderBoard = $('<span>');
+  //   for (var i = 0; i < scoreArray.length; i++) {
+  //     leaderBoard.append(scoreArray[i].player + ' : ' + scoreArray[i].currentScore + ' ');
+  //   }
+  //   $('h3').html(leaderBoard);
+  // }
 
   socket.on('sendFoodInfo', function(data) {
     food.fillFood(foodContext, data.foodPos, data.foodColour);

@@ -1,8 +1,14 @@
 var express = require('express');
 var app = express();
 
-var players = 0;
+app.use(express.static('public'));
 
+var server = require('http').Server(app);
+var io = require('socket.io').listen(server);
+
+server.listen(process.env.PORT || 3000);
+
+var players = 0;
 var gameBoundary = 2500;
 var maxFood = gameBoundary/12;
 var foodPositions = [];
@@ -13,13 +19,6 @@ var eatenPositions = [];
 var scoreArray = [];
 var nameArray = [];
 
-app.use(express.static('public'));
-
-var server = require('http').Server(app);
-var io = require('socket.io').listen(server);
-
-server.listen(process.env.PORT || 3000);
-
 app.get('/', function (req, res) {
   res.sendfile('/index.html');
 });
@@ -29,48 +28,46 @@ io.on('connection', function (socket) {
   var currentPlayer = { id: socket.id };
   socket.emit('player info', { playerId: socket.id });
 
-  socket.on('player object info', function (data) {
-  });
-
-  socket.on('NewCirclePositions', function (data) {
-    circleInfo.push(data.circlePositions);
-  });
-  setInterval(function() {
-    socket.emit('UpdateCirclePositions', { circleData: circleInfo });
-
-  }, 25);
-
-
+  // socket.on('player object info', function (data) {
+  // });
 
   if(players === 1) { generateFoodInfo(); }
   socket.emit('sendFoodInfo', {foodPos: foodPositions, foodColour: randomColourArray});
+
+  socket.on('NewCirclePositions', function (data) {
+    circleInfo.push(data.circlePositions);
+    io.emit('UpdateCirclePositions', { circleData: circleInfo });
+  });
+
   socket.on('sendEatenPosition', function(data) {
     foodPositions.splice(data.eatenPositionIndex, 1);
     randomColourArray.splice(data.eatenPositionIndex, 1);
     eatenPositions.push(data.eatenPosition);
-  });
-  socket.on('sendCurrentScore', function(data) {
-    if (players === scoreArray.length) {
-      var index = nameArray.indexOf(data.player);
-      scoreArray[index].currentScore = data.currentScore;
-    } else {
-      scoreArray.push(data);
-      nameArray.push(data.player);
-    }
+    sendEatenArray();
   });
 
-  setInterval(sendEatenArray, 25);
-  setInterval(sendCurrentScore, 50);
+  // socket.on('sendCurrentScore', function(data) {
+  //   if (players === scoreArray.length) {
+  //     var index = nameArray.indexOf(data.player);
+  //     scoreArray[index].currentScore = data.currentScore;
+  //   } else {
+  //     scoreArray.push(data);
+  //     nameArray.push(data.player);
+  //   }
+  //   sendCurrentScore();
+  // });
+  //
+  // setInterval(sendCurrentScore, 50);
 
   function sendEatenArray() {
     var length = eatenPositions.length;
-    socket.emit('receiveEatenPosition', {position: eatenPositions});
+    io.emit('receiveEatenPosition', {position: eatenPositions});
     eatenPositions.splice(0, length);
   }
 
-  function sendCurrentScore() {
-    socket.emit('receiveCurrentScore', {score: scoreArray});
-  }
+  // function sendCurrentScore() {
+  //   io.emit('receiveCurrentScore', {score: scoreArray});
+  // }
 });
 
   // setInterval(send, 30000);
