@@ -1,8 +1,6 @@
 function Circle(xCoord, yCoord) {
   this.xCoord = xCoord;
   this.yCoord = yCoord;
-  this.prevX = xCoord;
-  this.prevY = yCoord;
   this.xVelocity = 0;
   this.yVelocity = 0;
   this.playerPoints = 0;
@@ -12,20 +10,11 @@ function Circle(xCoord, yCoord) {
   this.defaultRadius = 15;
   this.radius = this.defaultRadius;
   this.slowDownFactor = 0.05;
+  this.colour = randomColour;
 }
 
 var randomColour = new RandomColourGenerator().getRandomColour();
 var collisionPosition;
-
-Circle.prototype.draw = function(ballContext) {
-  // this.clearBall(ballContext);
-  ballContext.beginPath();
-  ballContext.arc(this.xCoord, this.yCoord, this.radius, 0, Math.PI * 2, true);
-  ballContext.closePath();
-  getProperties(ballContext);
-  // this.prevX = this.xCoord;
-  // this.prevY = this.yCoord;
-};
 
 // Circle.prototype.clearBall = function(ballContext) {
 //   ballContext.clearRect(this.prevX - this.radius - 5, this.prevY - this.radius - 5, this.radius * 2 + 10, this.radius * 2 + 10);
@@ -39,15 +28,7 @@ Circle.prototype.drawName = function(ballContext, playerName) {
 
 Circle.prototype.sizeFactor = function() {
   return 1 - (this.radius / this.defaultRadius - 1) * this.slowDownFactor;
-}
-
-function getProperties(ballContext) {
-  ballContext.fillStyle = randomColour;
-  ballContext.fill();
-  ballContext.strokeStyle = randomColour;
-  ballContext.stroke();
-  ballContext.lineWidth = 5;
-}
+};
 
 Circle.prototype.hasCollided = function(food) {
   for (var i = 0; i < food.foodPositions.length; i++) {

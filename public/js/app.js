@@ -15,7 +15,7 @@ $(document).ready(function() {
   var xCoord = gameBoundary / Math.round(Math.random() * 10);
   var yCoord = gameBoundary / Math.round(Math.random() * 10);
   var currentPlayer = {};
-  var opponentCircle = new Circle(0, 0, 0);
+  // var opponentCircle = new Circle(0, 0);
   var circle = new Circle(xCoord, yCoord);
   var food = new Food(gameBoundary);
 
@@ -41,47 +41,24 @@ $(document).ready(function() {
   }
 
   function move() {
-    ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
-    circle.draw(ballContext);
-    circle.drawName(ballContext,playerName);
-    // if(opponentCircle !== undefined) {
-    // opponentCircle.draw(ballContext);
-    //}
+    socket.emit('newCircleInfo', { circleInfo: circle });
     if (hitsRightBoundary() || hitsLeftBoundary()) circle.xVelocity = 0;
     if (hitsBottomBoundary() || hitsTopBoundary()) circle.yVelocity = 0;
     if (mouseX) calculateBallVelocity();
     circle.xCoord += circle.xVelocity;
     circle.yCoord += circle.yVelocity;
-    NewCirclePositions();
-    UpdateCirclePositions();
   }
 
-  function NewCirclePositions() {
-    socket.emit('NewCirclePositions', { circlePositions: circle });
-  }
-
-  function UpdateCirclePositions() {
-    socket.on('UpdateCirclePositions', function (data) {
-      var circleInfo = data.circleData;
-      var receivedCircle = circleInfo[circleInfo.length - 1];
-      // console.log("Circle ID: " + receivedCircle.ID);
-      // console.log(receivedCircle);
-      // console.log("Player ID: " + circle.playerID);
-      // if (receivedCircle.playerID === circle.playerID) {
-      //   circle.xCoord = receivedCircle.xCoord;
-      //   circle.yCoord = receivedCircle.yCoord;
-      //   circle.radius = receivedCircle.radius;
-      // }
-
-      if (receivedCircle.playerID !== circle.playerID) {
-        //opponentCircle = new Circle(receivedCircle.xCoord, receivedCircle.yCoord, receivedCircle.radius);
-        opponentCircle.xCoord = receivedCircle.xCoord;
-        opponentCircle.yCoord = receivedCircle.yCoord;
-        opponentCircle.radius = receivedCircle.radius;
-      }
-
-    });
-  }
+  socket.on('updateCircleInfo', function (data) {
+    ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
+    var coords = data.circleData;
+    for(var i = 0; i < coords.length; i++){
+      ballContext.fillStyle = coords[i].colour;
+      ballContext.beginPath();
+      ballContext.arc(coords[i].xCoord, coords[i].yCoord, coords[i].radius, 0, Math.PI * 2, true);
+      ballContext.fill();
+    }
+  });
 
   function eatFood() {
     if (circle.hasCollided(food)) {
