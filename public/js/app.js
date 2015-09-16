@@ -56,8 +56,10 @@ $(document).ready(function() {
 
   function eatFood() {
     if (circle.hasCollided(food)) {
-      socket.emit('sendEatenPosition', { eatenPosition: circle.collisionPosition });
+      var properIndex = food.foodPositions.indexOf(circle.collisionPosition);
+      socket.emit('sendEatenPosition', { eatenPosition: properIndex });
       deleteFood(circle.collisionPosition);
+      console.log(food.foodPositions.length);
       circle.getsBigger(food.radius);
     }
   }
