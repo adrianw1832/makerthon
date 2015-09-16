@@ -16,7 +16,7 @@ app.use(express.static('public'));
 var server = require('http').Server(app);
 var io = require('socket.io')(server);
 
-server.listen(3000);
+server.listen(process.env.PORT || 3000);
 
 app.get('/', function (req, res) {
   res.sendfile('/index.html');
