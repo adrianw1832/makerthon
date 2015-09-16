@@ -20,7 +20,7 @@ $(document).ready(function() {
   var defaultRadius = 15;
   var currentPlayer = {};
   var circle = new Circle(xCoord, yCoord, defaultRadius);
-  var opponentCircle;
+  var opponentCircle = new Circle(0, 0, 0);
   var food = new Food(gameBoundary);
 
   var mouseX, mouseY;
@@ -49,9 +49,10 @@ $(document).ready(function() {
     circle.draw(ballContext);
     circle.drawName(ballContext,playerName);
 
-    if(opponentCircle !== undefined) {
+    // if(opponentCircle !== undefined) {
+      // console.log(opponentCircle);
       opponentCircle.draw(ballContext);
-    }
+    //}
 
     if (hitsRightBoundary() || hitsLeftBoundary()) xVelocity = 0;
     if (hitsBottomBoundary() || hitsTopBoundary()) yVelocity = 0;
@@ -70,15 +71,20 @@ $(document).ready(function() {
     socket.on('UpdateCirclePositions', function (data) {
       var circleInfo = data.circleData;
       var receivedCircle = circleInfo[circleInfo.length - 1];
-
-      if (receivedCircle.ID === circle.playerID) {
+      // console.log("Circle ID: " + receivedCircle.ID);
+      // console.log(receivedCircle);
+      // console.log("Player ID: " + circle.playerID);
+      if (receivedCircle.playerID === circle.playerID) {
         circle.xCoord = receivedCircle.xCoord;
         circle.yCoord = receivedCircle.yCoord;
         circle.radius = receivedCircle.radius;
       }
 
-      if (receivedCircle !== circle.playerID) {
-        opponentCircle = new Circle(receivedCircle.xCoord, receivedCircle.yCoord, receivedCircle.radius);
+      if (receivedCircle.playerID !== circle.playerID) {
+        //opponentCircle = new Circle(receivedCircle.xCoord, receivedCircle.yCoord, receivedCircle.radius);
+        opponentCircle.xCoord = receivedCircle.xCoord;
+        opponentCircle.yCoord = receivedCircle.yCoord;
+        opponentCircle.radius = receivedCircle.radius;
       }
 
     });
@@ -190,7 +196,7 @@ $(document).ready(function() {
 
   function init() {
     backgroundGrid();
-    setInterval(move, 10);
+    setInterval(move, 30);
     setInterval(eatFood, 25);
     setInterval(scrollPage, 25);
     // setInterval(refillFood, 30000);

@@ -38,7 +38,7 @@ io.on('connection', function (socket) {
   setInterval(function() {
     socket.emit('UpdateCirclePositions', { circleData: circleInfo });
 
-  }, 10);
+  }, 25);
 
 
 
