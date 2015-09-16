@@ -1,5 +1,6 @@
 $(document).ready(function() {
-  var socket = io.connect('https://agarioblacg.herokuapp.com/');
+  // var socket = io.connect('https://agarioblacg.herokuapp.com/');
+  var socket = io.connect('http://localhost:3000');
   var ballCanvas = $(".ballCanvas")[0];
   var foodCanvas = $(".foodCanvas")[0];
   var gridCanvas = $(".gridCanvas")[0];
@@ -180,6 +181,10 @@ $(document).ready(function() {
     socket.emit('player object info', { player: currentPlayer });
     startPage();
   });
+
+  // socket.on('receiveRefillInformation', function(data) {
+  //   food.fillFood(foodContext, data.refillFoodPos, data.refillFoodCols);
+  // });
 
   function startPage() {
     $('.leaderBoard').hide();

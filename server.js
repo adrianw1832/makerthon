@@ -54,6 +54,14 @@ io.on('connection', function (socket) {
     socket.emit('receiveEatenPosition', {position: eatenPositions});
     eatenPositions.splice(0, length);
   }
+
+  // setInterval(send, 30000);
+
+  // function send() {
+  //   generateRefillFoodPosition();
+  //   socket.emit('receiveRefillInformation', { refillFoodPos: foodPositions, refillFoodCols: randomColourArray });
+  // }
+
 });
 
 function generateFoodInfo() {
@@ -79,3 +87,20 @@ function generateRandomColour() {
     randomColourArray.push(colour);
   }
 }
+
+// function generateRefillFoodPosition() {
+//  var totalToRefill = maxFood - foodPositions.length;
+//  for(var i = 0; i < totalToRefill; i++) {
+//    var xCoord = Math.round(Math.random() * (gameBoundary - foodRadius*2) + foodRadius);
+//    var yCoord = Math.round(Math.random() * (gameBoundary - foodRadius*2) + foodRadius);
+//    foodPositions.push([xCoord, yCoord]);
+//  }
+//  for(var i = 0; i < totalToRefill; i++) {
+//    var letters = '0123456789ABCDEF'.split('');
+//    var colour = '#';
+//    for (var j = 0; j < 6; j++) {
+//      colour += letters[Math.floor(Math.random() * 16)];
+//    }
+//    randomColourArray.push(colour);
+//  }
+// }
