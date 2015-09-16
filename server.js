@@ -8,6 +8,7 @@ var maxFood = gameBoundary/12;
 var foodPositions = [];
 var foodRadius = 10;
 var randomColourArray = [];
+var circleInfo = [];
 var eatenPositions = [];
 
 app.use(express.static('public'));
@@ -24,8 +25,21 @@ app.get('/', function (req, res) {
 io.on('connection', function (socket) {
   players++;
   var currentPlayer = { id: socket.id };
-  socket.emit('player info', { playerId: socket.id});
-  // socket.on('my other event', function (data) { console.log(data); });
+  socket.emit('player info', { playerId: socket.id });
+
+  socket.on('player object info', function (data) {
+  });
+
+  socket.on('NewCirclePositions', function (data) {
+    circleInfo.push(data.circlePositions);
+  });
+  setInterval(function() {
+    socket.emit('UpdateCirclePositions', { circleData: circleInfo });
+
+  }, 25);
+
+
+
   if(players === 1) { generateFoodInfo(); }
   socket.emit('sendFoodInfo', {foodPos: foodPositions, foodColour: randomColourArray});
   socket.on('sendEatenPosition', function(data) {
@@ -41,12 +55,6 @@ io.on('connection', function (socket) {
     eatenPositions.splice(0, length);
   }
 });
-
-// function gameLoop() {
-//   if(users.length > 0){
-//
-//   }
-// }
 
 function generateFoodInfo() {
   generateFoodPositions();
