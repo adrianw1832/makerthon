@@ -45,7 +45,6 @@ $(document).ready(function() {
     circle.draw(ballContext);
     circle.drawName(ballContext,playerName);
     // if(opponentCircle !== undefined) {
-      // console.log(opponentCircle);
       opponentCircle.draw(ballContext);
     //}
     if (hitsRightBoundary() || hitsLeftBoundary()) circle.xVelocity = 0;
@@ -91,6 +90,7 @@ $(document).ready(function() {
       socket.emit('sendEatenPosition', { eatenPosition: collisionPosition, eatenPositionIndex: collisionPositionIndex });
       deleteFood(collisionPosition);
       circle.getsBigger(food.radius);
+      socket.emit('sendCurrentScore', { player: playerName, currentScore: circle.playerPoints });
     }
   }
 
@@ -139,11 +139,7 @@ $(document).ready(function() {
   }
 
   $(window).scroll(function() {
-    $('.leaderBoard').css({
-      position: 'fixed',
-      top: '0px'
-    });
-    $('h3').html('1. ' + playerName + ' : ' + circle.playerPoints);
+    $('.leaderBoard').css({ position: 'fixed', top: '0px' });
   });
 
   socket.on('receiveEatenPosition', function(data) {
@@ -168,6 +164,19 @@ $(document).ready(function() {
       foodContext.clearRect(eatenPosition[0] - food.radius - 1.1, eatenPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
       food.foodCount--;
     }
+  }
+
+  socket.on('receiveCurrentScore', function(data) {
+    displayScore(data.score);
+  });
+
+  function displayScore(scoreArray) {
+    $('h3').html('');
+    var leaderBoard = $('<span>');
+    for (var i = 0; i < scoreArray.length; i++) {
+      leaderBoard.append(scoreArray[i].player + ' : ' + scoreArray[i].currentScore + ' ');
+    }
+    $('h3').html(leaderBoard);
   }
 
   socket.on('sendFoodInfo', function(data) {
@@ -205,10 +214,9 @@ $(document).ready(function() {
 
   function init() {
     backgroundGrid();
-    setInterval(move, 1000/40);
-    setInterval(eatFood, 1000 / 40);
-    setInterval(scrollPage, 1000 / 40);
-    // setInterval(drawFood, 30000);
+    setInterval(move, 25);
+    setInterval(eatFood, 25);
+    setInterval(scrollPage, 25);
     ballCanvas.addEventListener("mousemove", onMouseMove);
     setStartLocation();
   }
