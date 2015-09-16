@@ -1,37 +1,51 @@
-function Circle(xCoord, yCoord, radius) {
+function Circle(xCoord, yCoord) {
   this.xCoord = xCoord;
   this.yCoord = yCoord;
-  this.radius = radius;
+  this.prevX = xCoord;
+  this.prevY = yCoord;
+  this.xVelocity = 0;
+  this.yVelocity = 0;
   this.playerPoints = 0;
   this.collisionPosition;
   this.playerID;
+  this.defaultBallSpeed = 10;
+  this.defaultRadius = 15;
+  this.radius = this.defaultRadius;
+  this.slowDownFactor = 0.05;
 }
 
 var randomColour = new RandomColourGenerator().getRandomColour();
 var collisionPosition;
 
 Circle.prototype.draw = function(ballContext) {
+  this.clearBall(ballContext);
   ballContext.beginPath();
-  ballContext.arc(this.xCoord, this.yCoord, this.radius, 0, Math.PI * 2, true);
+  ballContext.arc(this.xCoord, this.yCoord, this.radius, 0, 3.142 * 2, true);
   ballContext.closePath();
   getProperties(ballContext);
+  this.prevX = this.xCoord;
+  this.prevY = this.yCoord;
+};
+
+Circle.prototype.clearBall = function(ballContext) {
+  ballContext.clearRect(this.prevX - this.radius - 5, this.prevY - this.radius - 5, this.radius * 2 + 10, this.radius * 2 + 10);
 };
 
 Circle.prototype.drawName = function(ballContext, playerName) {
-  ballContext.font = '20pt Calibri';
+  ballContext.font = '18pt Calibri';
   ballContext.fillStyle = 'black';
-  ballContext.fillText(playerName, this.xCoord - this.radius/2, this.yCoord);
+  ballContext.fillText(playerName, this.xCoord - this.radius / 2, this.yCoord);
 };
+
+Circle.prototype.sizeFactor = function() {
+  return 1 - (this.radius / this.defaultRadius - 1) * this.slowDownFactor;
+}
 
 function getProperties(ballContext) {
   ballContext.fillStyle = randomColour;
   ballContext.fill();
   ballContext.strokeStyle = randomColour;
   ballContext.stroke();
-  ballContext.shadowColor = '#999';
-  ballContext.shadowBlur = 15;
-  ballContext.shadowOffsetX = 3;
-  ballContext.shadowOffsetY = 3;
   ballContext.lineWidth = 5;
 }
 
