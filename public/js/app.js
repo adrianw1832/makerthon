@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  // var socket = io.connect('https://agarioblacg.herokuapp.com/');
   var socket = io.connect('http://localhost:3000');
   var ballCanvas = $(".ballCanvas")[0];
   var foodCanvas = $(".foodCanvas")[0];
@@ -11,15 +12,11 @@ $(document).ready(function() {
 
   var gameBoundary = 2500;
   var gamePadding = 250;
-  var xCoord = gameBoundary/2;
-  var yCoord = gameBoundary/2;
-  var xVelocity = 0;
-  var yVelocity = 0;
-  var defaultBallSpeed = 10;
-  var slowDownFactor = 0.05;
-  var defaultRadius = 15;
+  var xCoord = gameBoundary / Math.round(Math.random() * 10);
+  var yCoord = gameBoundary / Math.round(Math.random() * 10);
   var currentPlayer = {};
-  var circle = new Circle(xCoord, yCoord, defaultRadius);
+  var opponentCircle = new Circle(0, 0, 0);
+  var circle = new Circle(xCoord, yCoord);
   var food = new Food(gameBoundary);
 
   var mouseX, mouseY;
@@ -44,14 +41,46 @@ $(document).ready(function() {
   }
 
   function move() {
-    ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
+    ballContext.clearRect(0, 0, gameBoundary, gameBoundary)
     circle.draw(ballContext);
     circle.drawName(ballContext,playerName);
-    if (hitsRightBoundary() || hitsLeftBoundary()) xVelocity = 0;
-    if (hitsBottomBoundary() || hitsTopBoundary()) yVelocity = 0;
+    // if(opponentCircle !== undefined) {
+      opponentCircle.draw(ballContext);
+    //}
+    if (hitsRightBoundary() || hitsLeftBoundary()) circle.xVelocity = 0;
+    if (hitsBottomBoundary() || hitsTopBoundary()) circle.yVelocity = 0;
     if (mouseX) calculateBallVelocity();
-    circle.xCoord += xVelocity;
-    circle.yCoord += yVelocity;
+    circle.xCoord += circle.xVelocity;
+    circle.yCoord += circle.yVelocity;
+    NewCirclePositions();
+    UpdateCirclePositions();
+  }
+
+  function NewCirclePositions() {
+    socket.emit('NewCirclePositions', { circlePositions: circle })
+  }
+
+  function UpdateCirclePositions() {
+    socket.on('UpdateCirclePositions', function (data) {
+      var circleInfo = data.circleData;
+      var receivedCircle = circleInfo[circleInfo.length - 1];
+      // console.log("Circle ID: " + receivedCircle.ID);
+      // console.log(receivedCircle);
+      // console.log("Player ID: " + circle.playerID);
+      if (receivedCircle.playerID === circle.playerID) {
+        circle.xCoord = receivedCircle.xCoord;
+        circle.yCoord = receivedCircle.yCoord;
+        circle.radius = receivedCircle.radius;
+      }
+
+      if (receivedCircle.playerID !== circle.playerID) {
+        //opponentCircle = new Circle(receivedCircle.xCoord, receivedCircle.yCoord, receivedCircle.radius);
+        opponentCircle.xCoord = receivedCircle.xCoord;
+        opponentCircle.yCoord = receivedCircle.yCoord;
+        opponentCircle.radius = receivedCircle.radius;
+      }
+
+    });
   }
 
   function eatFood() {
@@ -66,25 +95,24 @@ $(document).ready(function() {
   }
 
   function hitsRightBoundary() {
-    return ((circle.xCoord > gameBoundary - circle.radius*1.5) && mouseX >= circle.xCoord);
+    return ((circle.xCoord > gameBoundary - circle.radius * 1.5) && mouseX >= circle.xCoord);
   }
 
   function hitsLeftBoundary() {
-    return (circle.xCoord < circle.radius *1.5 && mouseX <= circle.xCoord);
+    return (circle.xCoord < circle.radius * 1.5 && mouseX <= circle.xCoord);
   }
 
   function hitsTopBoundary() {
-    return (circle.yCoord < circle.radius *1.5 && mouseY <= circle.yCoord);
+    return (circle.yCoord < circle.radius * 1.5 && mouseY <= circle.yCoord);
   }
 
   function hitsBottomBoundary() {
-    return ((circle.yCoord > gameBoundary - circle.radius *1.5) && mouseY >= circle.yCoord);
+    return ((circle.yCoord > gameBoundary - circle.radius * 1.5) && mouseY >= circle.yCoord);
   }
 
   function onMouseMove(page) {
     mouseX = page.pageX - gamePadding;
     mouseY = page.pageY - gamePadding;
-    scrollPage();
     calculateBallVelocity();
   }
 
@@ -92,18 +120,14 @@ $(document).ready(function() {
     var xdiff = mouseX - circle.xCoord;
     var ydiff = mouseY - circle.yCoord;
     var mouseToBallDistance = Math.sqrt(xdiff * xdiff + ydiff * ydiff);
-    var time = mouseToBallDistance / (defaultBallSpeed * sizeFactor());
+    var time = mouseToBallDistance / (circle.defaultBallSpeed * circle.sizeFactor());
     if (mouseToBallDistance < circle.radius) {
-      xVelocity = 0;
-      yVelocity = 0;
+      circle.xVelocity = 0;
+      circle.yVelocity = 0;
     } else {
-      xVelocity = xdiff / time;
-      yVelocity = ydiff / time;
+      circle.xVelocity = xdiff / time;
+      circle.yVelocity = ydiff / time;
     }
-  }
-
-  function sizeFactor() {
-    return 1 - (circle.radius / defaultRadius - 1) * slowDownFactor;
   }
 
   var previousXCoord, previousYcoord;
@@ -161,10 +185,15 @@ $(document).ready(function() {
 
   socket.on('player info', function(data) {
     currentPlayer.id = data.playerId;
+    circle.playerID = data.playerId;
     currentPlayer.circle = circle;
-    socket.emit('my other event', { my: currentPlayer });
+    socket.emit('player object info', { player: currentPlayer });
     startPage();
   });
+
+  // socket.on('receiveRefillInformation', function(data) {
+  //   food.fillFood(foodContext, data.refillFoodPos, data.refillFoodCols);
+  // });
 
   function startPage() {
     $('.leaderBoard').hide();
@@ -193,7 +222,7 @@ $(document).ready(function() {
   }
 
   function setStartLocation() {
-    $(document).scrollTop(circle.yCoord - gamePadding);
-    $(document).scrollLeft(circle.xCoord - gamePadding * 3);
+    $(document).scrollTop(circle.yCoord - gamePadding + Math.random() * 500);
+    $(document).scrollLeft(circle.xCoord - gamePadding * 3 + Math.random() * 500);
   }
 });
