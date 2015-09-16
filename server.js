@@ -14,7 +14,7 @@ var eatenPositions = [];
 app.use(express.static('public'));
 
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io').listen(server);
 
 server.listen(process.env.PORT || 3000);
 
