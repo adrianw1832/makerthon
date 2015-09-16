@@ -9,6 +9,8 @@ var foodPositions = [];
 var foodRadius = 10;
 var randomColourArray = [];
 var eatenPositions = [];
+var scoreArray = [];
+var nameArray = [];
 
 app.use(express.static('public'));
 
@@ -33,12 +35,27 @@ io.on('connection', function (socket) {
     randomColourArray.splice(data.eatenPositionIndex, 1);
     eatenPositions.push(data.eatenPosition);
   });
-  setInterval(test, 25);
+  socket.on('sendCurrentScore', function(data) {
+    if (players === scoreArray.length) {
+      var index = nameArray.indexOf(data.player);
+      scoreArray[index].currentScore = data.currentScore;
+    } else {
+      scoreArray.push(data);
+      nameArray.push(data.player);
+    }
+  });
 
-  function test() {
+  setInterval(sendEatenArray, 25);
+  setInterval(sendCurrentScore, 50);
+
+  function sendEatenArray() {
     var length = eatenPositions.length;
     socket.emit('receiveEatenPosition', {position: eatenPositions});
     eatenPositions.splice(0, length);
+  }
+
+  function sendCurrentScore() {
+    socket.emit('receiveCurrentScore', {score: scoreArray});
   }
 });
 
