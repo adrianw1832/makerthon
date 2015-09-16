@@ -30,24 +30,15 @@ io.on('connection', function (socket) {
   socket.emit('player info', { playerId: socket.id });
 
   socket.on('player object info', function (data) {
-    // xCoord = data.player.circle.xCoord;
-    // yCoord = data.player.circle.yCoord;
   });
 
   socket.on('NewCirclePositions', function (data) {
     circleInfo.push(data.circlePositions);
-
-    // if(circle.playerID !== socket.id) {
-    //   socket.emit('DrawOpponentCircle', { opponentData: circle });
-    // }
-
-
-
   });
   setInterval(function() {
     socket.emit('UpdateCirclePositions', { circleData: circleInfo });
 
-  }, 5000);
+  }, 10);
 
 
 
@@ -61,12 +52,6 @@ io.on('connection', function (socket) {
   });
   setInterval(function(){ socket.emit('receiveEatenPosition', {position: eatenPosition}); }, 25);
 });
-
-// function gameLoop() {
-//   if(users.length > 0){
-//
-//   }
-// }
 
 function generateFoodInfo() {
   generateFoodPositions();

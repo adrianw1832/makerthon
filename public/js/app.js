@@ -20,6 +20,7 @@ $(document).ready(function() {
   var defaultRadius = 15;
   var currentPlayer = {};
   var circle = new Circle(xCoord, yCoord, defaultRadius);
+  var opponentCircle;
   var food = new Food(gameBoundary);
 
   var mouseX, mouseY;
@@ -47,7 +48,11 @@ $(document).ready(function() {
     ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
     circle.draw(ballContext);
     circle.drawName(ballContext,playerName);
-    console.log(circle.ID);
+
+    if(opponentCircle !== undefined) {
+      opponentCircle.draw(ballContext);
+    }
+
     if (hitsRightBoundary() || hitsLeftBoundary()) xVelocity = 0;
     if (hitsBottomBoundary() || hitsTopBoundary()) yVelocity = 0;
     if (mouseX) calculateBallVelocity();
@@ -55,13 +60,6 @@ $(document).ready(function() {
     circle.yCoord += yVelocity;
     NewCirclePositions();
     UpdateCirclePositions();
-    DrawOpponentCircle();
-  }
-
-  function DrawOpponentCircle() {
-    socket.on('DrawOpponentCircle', function(data) {
-      console.log("Opponent " + data.circle.playerID);
-    });
   }
 
   function NewCirclePositions() {
@@ -71,11 +69,18 @@ $(document).ready(function() {
   function UpdateCirclePositions() {
     socket.on('UpdateCirclePositions', function (data) {
       var circleInfo = data.circleData;
-      console.log(circleInfo[circleInfo.length - 1]);
-      // circle.ID = circleInfo.playerID;
-      // circle.xCoord = data.circleData.xCoord;
-      // circle.yCoord = data.circleData.yCoord;
-      // circle.ID = data.circleData.playerID;
+      var receivedCircle = circleInfo[circleInfo.length - 1];
+
+      if (receivedCircle.ID === circle.playerID) {
+        circle.xCoord = receivedCircle.xCoord;
+        circle.yCoord = receivedCircle.yCoord;
+        circle.radius = receivedCircle.radius;
+      }
+
+      if (receivedCircle !== circle.playerID) {
+        opponentCircle = new Circle(receivedCircle.xCoord, receivedCircle.yCoord, receivedCircle.radius);
+      }
+
     });
   }
 
@@ -185,7 +190,7 @@ $(document).ready(function() {
 
   function init() {
     backgroundGrid();
-    setInterval(move, 5000);
+    setInterval(move, 10);
     setInterval(eatFood, 25);
     setInterval(scrollPage, 25);
     // setInterval(refillFood, 30000);
@@ -194,7 +199,7 @@ $(document).ready(function() {
   }
 
   function setStartLocation() {
-    $(document).scrollTop(circle.yCoord - gamePadding);
-    $(document).scrollLeft(circle.xCoord - gamePadding * 3);
+    $(document).scrollTop(circle.yCoord - gamePadding + Math.random() * 500);
+    $(document).scrollLeft(circle.xCoord - gamePadding * 3 + Math.random() * 500);
   }
 });
