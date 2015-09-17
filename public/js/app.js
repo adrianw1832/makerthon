@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  // var socket = io.connect('https://agarioblacg.herokuapp.com/');
+
   var socket = io.connect('http://localhost:3000');
   var ballCanvas = $(".ballCanvas")[0];
   var foodCanvas = $(".foodCanvas")[0];
@@ -8,14 +8,10 @@ $(document).ready(function() {
   var foodContext = foodCanvas.getContext("2d");
   var gridContext = gridCanvas.getContext("2d");
 
-  var playerName;
-
   var gameBoundary = 2500;
   var gamePadding = 250;
-  var xCoord = gameBoundary / Math.round(Math.random() * 10);
-  var yCoord = gameBoundary / Math.round(Math.random() * 10);
-  var currentPlayer = {};
-  // var opponentCircle = new Circle(0, 0);
+  var xCoord = gamePadding * 2 * Math.round(Math.random() * 4);
+  var yCoord = gamePadding * 2 * Math.round(Math.random() * 4);
   var circle = new Circle(xCoord, yCoord);
   var food = new Food(gameBoundary);
 
@@ -47,6 +43,7 @@ $(document).ready(function() {
     if (mouseX) calculateBallVelocity();
     circle.xCoord += circle.xVelocity;
     circle.yCoord += circle.yVelocity;
+    eatFood();
   }
 
   socket.on('updateCircleInfo', function (data) {
@@ -54,6 +51,8 @@ $(document).ready(function() {
     var coords = data.circleData;
     for(var i = 0; i < coords.length; i++){
       ballContext.fillStyle = coords[i].colour;
+      ballContext.font = '20pt Calibri';
+      ballContext.fillText(coords[i].playerName, coords[i].xCoord - coords[i].radius / 2, coords[i].yCoord - coords[i].radius);
       ballContext.beginPath();
       ballContext.arc(coords[i].xCoord, coords[i].yCoord, coords[i].radius, 0, Math.PI * 2, true);
       ballContext.fill();
@@ -115,32 +114,14 @@ $(document).ready(function() {
     previousYcoord = circle.yCoord;
   }
 
-  $(window).scroll(function() {
-    $('.leaderBoard').css({ position: 'fixed', top: '0px' });
-  });
-
   socket.on('receiveEatenPosition', function(data) {
-    deleteFoodArray(data.position);
+    deleteFood(data.position);
   });
-
-  function deleteFoodArray(array) {
-    if (array.length !== 0) {
-      for (var i = 0; i < array.length; i++) {
-        var index = food.foodPositions.indexOf(array[i]);
-        if (index > 0) food.foodPositions.splice(index, 1);
-        foodContext.clearRect(array[i][0] - food.radius - 1.1, array[i][1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
-        food.foodCount--;
-      }
-    }
-  }
 
   function deleteFood(eatenPosition) {
-    if (!!eatenPosition) {
-      var index = food.foodPositions.indexOf(eatenPosition);
-      if (index > 0) food.foodPositions.splice(index, 1);
-      foodContext.clearRect(eatenPosition[0] - food.radius - 1.1, eatenPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
-      food.foodCount--;
-    }
+    var index = food.foodPositions.indexOf(eatenPosition);
+    if (index > 0) food.foodPositions.splice(index, 1);
+    foodContext.clearRect(eatenPosition[0] - food.radius - 1.1, eatenPosition[1] - food.radius - 1.1, food.radius * 2.45, food.radius * 2.45);
   }
 
   // socket.on('receiveCurrentScore', function(data) {
@@ -160,24 +141,12 @@ $(document).ready(function() {
     food.fillFood(foodContext, data.foodPos, data.foodColour);
   });
 
-  socket.on('player info', function(data) {
-    currentPlayer.id = data.playerId;
-    circle.playerID = data.playerId;
-    currentPlayer.circle = circle;
-    socket.emit('player object info', { player: currentPlayer });
-    startPage();
-  });
-
-  // socket.on('receiveRefillInformation', function(data) {
-  //   food.fillFood(foodContext, data.refillFoodPos, data.refillFoodCols);
-  // });
-
   function startPage() {
     $('.leaderBoard').hide();
     $('input:text').keypress(function(event) {
       if (event.keyCode == 13) {
         $('.start-game').click();
-        playerName = $('.player-name').val();
+        circle.playerName = $('.player-name').val();
       }
     });
   }
@@ -185,21 +154,23 @@ $(document).ready(function() {
   $('.start-game').click(function() {
     $('.leaderBoard').show();
     $('.startGame').hide();
-    playerName = $('.player-name').val();
+    circle.playerName = $('.player-name').val();
+    socket.emit('startGame', {startGame: 'go'});
     init();
   });
 
   function init() {
     backgroundGrid();
-    setInterval(move, 25);
-    setInterval(eatFood, 25);
-    setInterval(scrollPage, 25);
+    setInterval(move, 35);
+    setInterval(scrollPage, 35);
     ballCanvas.addEventListener("mousemove", onMouseMove);
     setStartLocation();
   }
 
   function setStartLocation() {
-    $(document).scrollTop(circle.yCoord - gamePadding + Math.random() * 500);
-    $(document).scrollLeft(circle.xCoord - gamePadding * 3 + Math.random() * 500);
+    $(document).scrollLeft(circle.xCoord);
+    $(document).scrollTop(circle.yCoord);
   }
+
+  startPage();
 });

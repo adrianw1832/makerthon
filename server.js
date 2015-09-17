@@ -10,43 +10,43 @@ server.listen(process.env.PORT || 3000);
 
 var players = 0;
 var gameBoundary = 2500;
-var maxFood = gameBoundary/12;
+var maxFoodCount = gameBoundary / 10;
+var currentFoodCount = 0;
 var foodPositions = [];
 var foodRadius = 10;
 var randomColourArray = [];
 var circleInfoArray = [];
-var eatenPositions = [];
-var scoreArray = [];
-var nameArray = [];
+var eatenPosition;
+// var nameArray = [];
+// var scoreArray = [];
 
-app.get('/', function (req, res) {
+app.get('/', function(req, res) {
   res.sendfile('/index.html');
 });
 
-io.on('connection', function (socket) {
-  players++;
-  var currentPlayer = { id: socket.id };
-  socket.emit('player info', { playerId: socket.id });
+io.on('connection', function(socket) {
+  socket.on('startGame', function(data) {
+    players++;
+    if(players === 1) { generateFoodInfo(maxFoodCount); }
+    socket.emit('sendFoodInfo', {foodPos: foodPositions, foodColour: randomColourArray});
+    setInterval(send, 30000);
+  });
 
-  // socket.on('player object info', function (data) {
-  // });
-
-  if(players === 1) { generateFoodInfo(); }
-  socket.emit('sendFoodInfo', {foodPos: foodPositions, foodColour: randomColourArray});
-
-  socket.on('newCircleInfo', function (data) {
+  socket.on('newCircleInfo', function(data) {
     circleInfoArray.push(data.circleInfo);
     if (circleInfoArray.length === players) {
-      io.emit('updateCircleInfo', { circleData: circleInfo });
-      circleInfo = [];
+      io.emit('updateCircleInfo', { circleData: circleInfoArray });
+      circleInfoArray = [];
     }
   });
 
   socket.on('sendEatenPosition', function(data) {
     foodPositions.splice(data.eatenPositionIndex, 1);
     randomColourArray.splice(data.eatenPositionIndex, 1);
-    eatenPositions.push(data.eatenPosition);
-    sendEatenArray();
+    currentFoodCount--;
+    eatenPosition = data.eatenPosition;
+    io.emit('receiveEatenPosition', {position: eatenPosition});
+    eatenPosition = null;
   });
 
   // socket.on('sendCurrentScore', function(data) {
@@ -62,41 +62,33 @@ io.on('connection', function (socket) {
   //
   // setInterval(sendCurrentScore, 50);
 
-  function sendEatenArray() {
-    var length = eatenPositions.length;
-    io.emit('receiveEatenPosition', {position: eatenPositions});
-    eatenPositions.splice(0, length);
-  }
-
   // function sendCurrentScore() {
   //   io.emit('receiveCurrentScore', {score: scoreArray});
   // }
+
+  function send() {
+    var refillCount = maxFoodCount - currentFoodCount;
+    generateFoodInfo(refillCount);
+    socket.emit('sendFoodInfo', {foodPos: foodPositions, foodColour: randomColourArray});
+  }
 });
 
-  // setInterval(send, 30000);
-
-  // function send() {
-  //   generateRefillFoodPosition();
-  //   socket.emit('receiveRefillInformation', { refillFoodPos: foodPositions, refillFoodCols: randomColourArray });
-  // }
-
-// });
-
-function generateFoodInfo() {
-  generateFoodPositions();
-  generateRandomColour();
+function generateFoodInfo(numberOfTimes) {
+  generateFoodPositions(numberOfTimes);
+  generateRandomColour(numberOfTimes);
 }
 
-function generateFoodPositions() {
-  for(var i=0; i<maxFood; i++) {
+function generateFoodPositions(numberOfTimes) {
+  for(var i=0; i<numberOfTimes; i++) {
     var xCoord = Math.round(Math.random() * (gameBoundary - foodRadius*2) + foodRadius);
     var yCoord = Math.round(Math.random() * (gameBoundary - foodRadius*2) + foodRadius);
     foodPositions.push([xCoord, yCoord]);
+    currentFoodCount++;
   }
 }
 
-function generateRandomColour() {
-  for(var i=0; i<maxFood; i++) {
+function generateRandomColour(numberOfTimes) {
+  for(var i=0; i<numberOfTimes; i++) {
     var letters = '0123456789ABCDEF'.split('');
     var colour = '#';
     for (var j = 0; j < 6; j++) {
@@ -105,20 +97,3 @@ function generateRandomColour() {
     randomColourArray.push(colour);
   }
 }
-
-// function generateRefillFoodPosition() {
-//  var totalToRefill = maxFood - foodPositions.length;
-//  for(var i = 0; i < totalToRefill; i++) {
-//    var xCoord = Math.round(Math.random() * (gameBoundary - foodRadius*2) + foodRadius);
-//    var yCoord = Math.round(Math.random() * (gameBoundary - foodRadius*2) + foodRadius);
-//    foodPositions.push([xCoord, yCoord]);
-//  }
-//  for(var i = 0; i < totalToRefill; i++) {
-//    var letters = '0123456789ABCDEF'.split('');
-//    var colour = '#';
-//    for (var j = 0; j < 6; j++) {
-//      colour += letters[Math.floor(Math.random() * 16)];
-//    }
-//    randomColourArray.push(colour);
-//  }
-// }

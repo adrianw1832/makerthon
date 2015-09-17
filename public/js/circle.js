@@ -6,6 +6,7 @@ function Circle(xCoord, yCoord) {
   this.playerPoints = 0;
   this.collisionPosition;
   this.playerID;
+  this.playerName;
   this.defaultBallSpeed = 10;
   this.defaultRadius = 15;
   this.radius = this.defaultRadius;
@@ -19,12 +20,6 @@ var collisionPosition;
 // Circle.prototype.clearBall = function(ballContext) {
 //   ballContext.clearRect(this.prevX - this.radius - 5, this.prevY - this.radius - 5, this.radius * 2 + 10, this.radius * 2 + 10);
 // };
-
-Circle.prototype.drawName = function(ballContext, playerName) {
-  ballContext.font = '18pt Calibri';
-  ballContext.fillStyle = 'black';
-  ballContext.fillText(playerName, this.xCoord - this.radius / 2, this.yCoord);
-};
 
 Circle.prototype.sizeFactor = function() {
   return 1 - (this.radius / this.defaultRadius - 1) * this.slowDownFactor;

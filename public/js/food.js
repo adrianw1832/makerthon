@@ -1,5 +1,4 @@
 function Food(size) {
-  this.foodCount = 0;
   this.radius = 10;
   this.foodPositions;
 }
@@ -13,7 +12,6 @@ Food.prototype.fillFood = function(foodContext, foodPositions, foodColours) {
     foodContext.arc(foodPositions[i][0], foodPositions[i][1], this.radius, 0, Math.PI * 2, true);
     foodContext.closePath();
     setProperties(foodContext, foodColours[i]);
-    this.foodCount++;
   }
 };
 
