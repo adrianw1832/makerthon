@@ -17,8 +17,7 @@ var foodRadius = 10;
 var randomColourArray = [];
 var circleInfoArray = [];
 var eatenPosition;
-// var nameArray = [];
-// var scoreArray = [];
+// var scoreArray = {};
 
 app.get('/', function(req, res) {
   res.sendfile('/index.html');
@@ -46,25 +45,18 @@ io.on('connection', function(socket) {
     currentFoodCount--;
     eatenPosition = data.eatenPosition;
     io.emit('receiveEatenPosition', {position: eatenPosition});
-    eatenPosition = null;
   });
 
+  // need to fix this
   // socket.on('sendCurrentScore', function(data) {
-  //   if (players === scoreArray.length) {
+  //   if (scoreArray.keys.include(data.player)) {
   //     var index = nameArray.indexOf(data.player);
   //     scoreArray[index].currentScore = data.currentScore;
   //   } else {
   //     scoreArray.push(data);
-  //     nameArray.push(data.player);
   //   }
-  //   sendCurrentScore();
-  // });
-  //
-  // setInterval(sendCurrentScore, 50);
-
-  // function sendCurrentScore() {
   //   io.emit('receiveCurrentScore', {score: scoreArray});
-  // }
+  // });
 
   function send() {
     var refillCount = maxFoodCount - currentFoodCount;

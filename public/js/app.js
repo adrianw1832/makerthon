@@ -50,10 +50,10 @@ $(document).ready(function() {
     ballContext.clearRect(0, 0, gameBoundary, gameBoundary);
     var coords = data.circleData;
     for(var i = 0; i < coords.length; i++){
+      ballContext.beginPath();
       ballContext.fillStyle = coords[i].colour;
       ballContext.font = '20pt Calibri';
       ballContext.fillText(coords[i].playerName, coords[i].xCoord - coords[i].radius / 2, coords[i].yCoord - coords[i].radius);
-      ballContext.beginPath();
       ballContext.arc(coords[i].xCoord, coords[i].yCoord, coords[i].radius, 0, Math.PI * 2, true);
       ballContext.fill();
     }
@@ -66,7 +66,7 @@ $(document).ready(function() {
       socket.emit('sendEatenPosition', { eatenPosition: collisionPosition, eatenPositionIndex: collisionPositionIndex });
       deleteFood(collisionPosition);
       circle.getsBigger(food.radius);
-      socket.emit('sendCurrentScore', { player: playerName, currentScore: circle.playerPoints });
+      // socket.emit('sendCurrentScore', { player: playerName, currentScore: circle.playerPoints });
     }
   }
 
@@ -132,7 +132,7 @@ $(document).ready(function() {
   //   $('h3').html('');
   //   var leaderBoard = $('<span>');
   //   for (var i = 0; i < scoreArray.length; i++) {
-  //     leaderBoard.append(scoreArray[i].player + ' : ' + scoreArray[i].currentScore + ' ');
+  //     leaderBoard.append("<p>" + scoreArray[i].player + ' : ' + scoreArray[i].currentScore + "</p>");
   //   }
   //   $('h3').html(leaderBoard);
   // }
